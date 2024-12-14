@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../contexts/AuthContext';
 
 interface User {
   _id: string;
@@ -22,14 +23,17 @@ const UserManagement = () => {
     role: 'user',
     status: 'active'
   });
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (isAuthenticated) {
+      fetchUsers();
+    }
+  }, [isAuthenticated]);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/users');
+      const response = await axiosInstance.get('/users');
       setUsers(response.data);
     } catch (error) {
       toast.error('Không thể tải danh sách người dùng');
@@ -40,10 +44,10 @@ const UserManagement = () => {
     e.preventDefault();
     try {
       if (editingUser) {
-        await axios.put(`http://localhost:5000/api/users/${editingUser._id}`, formData);
+        await axiosInstance.put(`/users/${editingUser._id}`, formData);
         toast.success('Cập nhật người dùng thành công!');
       } else {
-        await axios.post('http://localhost:5000/api/users', formData);
+        await axiosInstance.post('/users', formData);
         toast.success('Thêm người dùng mới thành công!');
       }
       setShowModal(false);
@@ -69,7 +73,7 @@ const UserManagement = () => {
   const handleToggleStatus = async (user: User) => {
     try {
       const newStatus = user.status === 'active' ? 'inactive' : 'active';
-      await axios.put(`http://localhost:5000/api/users/${user._id}/status`, {
+      await axiosInstance.put(`/users/${user._id}/status`, {
         status: newStatus
       });
       toast.success('Cập nhật trạng thái thành công!');
@@ -88,6 +92,16 @@ const UserManagement = () => {
       status: 'active'
     });
     setEditingUser(null);
+  };
+
+  const handleChangeRole = async (user: User, newRole: string) => {
+    try {
+      await axiosInstance.put(`/users/${user._id}/role`, { role: newRole });
+      toast.success('Cập nhật vai trò thành công!');
+      fetchUsers();
+    } catch (error) {
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    }
   };
 
   return (
@@ -115,7 +129,16 @@ const UserManagement = () => {
               <tr key={user._id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-                <td>{user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}</td>
+                <td>
+                  <Form.Select 
+                    value={user.role} 
+                    onChange={(e) => handleChangeRole(user, e.target.value)}
+                  >
+                    <option value="user">Người dùng</option>
+                    <option value="admin">Quản trị viên</option>
+                    <option value="librarian">Thủ thư</option>
+                  </Form.Select>
+                </td>
                 <td>{user.status === 'active' ? 'Hoạt động' : 'Đã khóa'}</td>
                 <td>
                   <Button
@@ -191,6 +214,7 @@ const UserManagement = () => {
               >
                 <option value="user">Người dùng</option>
                 <option value="admin">Quản trị viên</option>
+                <option value="librarian">Thủ thư</option>
               </Form.Select>
             </Form.Group>
 

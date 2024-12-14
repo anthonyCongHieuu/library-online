@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Book {
   _id: string;
@@ -25,65 +26,107 @@ interface BorrowRecord {
 }
 
 const BorrowReturn = () => {
+  const { user, isAuthenticated, logout } = useAuth();
   const [borrowRecords, setBorrowRecords] = useState<BorrowRecord[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     bookId: '',
-    userId: '',
+    userId: user?.id || '',
     returnDate: ''
   });
 
   useEffect(() => {
-    fetchBorrowRecords();
-    fetchBooks();
-  }, []);
+    if (isAuthenticated) {
+      fetchBorrowRecords();
+      fetchBooks();
+    }
+  }, [isAuthenticated]);
 
   const fetchBorrowRecords = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/borrows');
-      setBorrowRecords(response.data);
-    } catch (error) {
-      toast.error('Không thể tải danh sách mượn sách');
+      const response = await axiosInstance.get('/borrows');
+      
+      // Kiểm tra và xử lý dữ liệu trả về
+      const recordsData = response.data.borrowRecords || response.data;
+      setBorrowRecords(Array.isArray(recordsData) ? recordsData : []);
+    } catch (error: any) {
+      console.error('Fetch Borrow Records Error:', error.response);
+      
+      // Xử lý chi tiết các loại lỗi
+      if (error.response?.status === 403) {
+        toast.error('Bạn không có quyền truy cập danh sách mượn sách');
+      } else if (error.response?.status === 401) {
+        logout();
+        window.location.href = '/login';
+      } else {
+        toast.error('Không thể tải danh sách mượn sách');
+      }
     }
   };
 
   const fetchBooks = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/books');
-      setBooks(response.data);
-    } catch (error) {
-      toast.error('Không thể tải danh sách sách');
+      const response = await axiosInstance.get('/books');
+      
+      // Kiểm tra và xử lý dữ liệu trả về
+      const booksData = response.data.books || response.data;
+      setBooks(Array.isArray(booksData) ? booksData : []);
+    } catch (error: any) {
+      console.error('Fetch Books Error:', error.response);
+      
+      // Xử lý chi tiết các loại lỗi
+      if (error.response?.status === 403) {
+        toast.error('Bạn không có quyền truy cập danh sách sách');
+      } else if (error.response?.status === 401) {
+        logout();
+        window.location.href = '/login';
+      } else {
+        toast.error('Không thể tải danh sách sách');
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/borrows', formData);
+      await axiosInstance.post('/borrows/borrow', {
+        ...formData,
+        userId: user?.id // Đảm bảo userId được gửi
+      });
       toast.success('Đăng ký mượn sách thành công!');
       setShowModal(false);
       fetchBorrowRecords();
       resetForm();
-    } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    } catch (error: any) {
+      console.error('Submit Borrow Error:', error.response);
+      
+      // Xử lý chi tiết lỗi
+      const errorMessage = error.response?.data?.message 
+        || 'Có lỗi xảy ra. Vui lòng thử lại!';
+      toast.error(errorMessage);
     }
   };
 
   const handleReturn = async (id: string) => {
     try {
-      await axios.put(`http://localhost:5000/api/borrows/${id}/return`);
+      await axiosInstance.patch(`/borrows/${id}/return`);
       toast.success('Trả sách thành công!');
       fetchBorrowRecords();
-    } catch (error) {
-      toast.error('Không thể trả sách. Vui lòng thử lại!');
+    } catch (error: any) {
+      console.error('Return Book Error:', error.response);
+      
+      // Xử lý chi tiết lỗi
+      const errorMessage = error.response?.data?.message 
+        || 'Không thể trả sách. Vui lòng thử lại!';
+      toast.error(errorMessage);
     }
   };
 
   const resetForm = () => {
     setFormData({
       bookId: '',
-      userId: '',
+      userId: user?.id || '',
       returnDate: ''
     });
   };
@@ -112,20 +155,14 @@ const BorrowReturn = () => {
           <tbody>
             {borrowRecords.map((record) => (
               <tr key={record._id}>
-                <td>{record.book.title}</td>
-                <td>{record.user.name}</td>
-                <td>{new Date(record.borrowDate).toLocaleDateString('vi-VN')}</td>
-                <td>{new Date(record.returnDate).toLocaleDateString('vi-VN')}</td>
-                <td>
-                  {record.status === 'borrowed' ? 'Đang mượn' : 'Đã trả'}
-                </td>
+                <td>{record.book?.title || 'Không xác định'}</td>
+                <td>{record.user?.name || 'Không xác định'}</td>
+                <td>{record.borrowDate ? new Date(record.borrowDate).toLocaleDateString() : 'Chưa xác định'}</td>
+                <td>{record.returnDate ? new Date(record.returnDate).toLocaleDateString() : 'Chưa trả'}</td>
+                <td>{record.status === 'borrowed' ? 'Đang mượn' : 'Đã trả'}</td>
                 <td>
                   {record.status === 'borrowed' && (
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => handleReturn(record._id)}
-                    >
+                    <Button variant="danger" onClick={() => handleReturn(record._id)}>
                       Trả Sách
                     </Button>
                   )}
@@ -136,53 +173,44 @@ const BorrowReturn = () => {
         </Table>
       </div>
 
-      <Modal show={showModal} onHide={() => {
-        setShowModal(false);
-        resetForm();
-      }}>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Đăng Ký Mượn Sách</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            <Form.Group controlId="formBookId">
               <Form.Label>Chọn Sách</Form.Label>
-              <Form.Select
+              <Form.Control
+                as="select"
                 value={formData.bookId}
                 onChange={(e) => setFormData({ ...formData, bookId: e.target.value })}
                 required
               >
                 <option value="">Chọn sách...</option>
                 {books.map((book) => (
-                  <option key={book._id} value={book._id} disabled={book.available === 0}>
-                    {book.title} ({book.available} cuốn có sẵn)
+                  <option 
+                    key={book._id} 
+                    value={book._id}
+                    disabled={book.available === 0}
+                  >
+                    {book.title }
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Control>
             </Form.Group>
-
-            <Form.Group className="mb-3">
+            <Form.Group controlId="formReturnDate">
               <Form.Label>Ngày Trả</Form.Label>
               <Form.Control
                 type="date"
                 value={formData.returnDate}
                 onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
-                min={new Date().toISOString().split('T')[0]}
                 required
               />
             </Form.Group>
-
-            <div className="d-flex justify-content-end">
-              <Button variant="secondary" className="me-2" onClick={() => {
-                setShowModal(false);
-                resetForm();
-              }}>
-                Hủy
-              </Button>
-              <Button variant="primary" type="submit">
-                Đăng Ký Mượn
-              </Button>
-            </div>
+            <Button variant="primary" type="submit">
+              Gửi
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>

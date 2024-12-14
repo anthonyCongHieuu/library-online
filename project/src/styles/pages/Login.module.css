@@ -1,0 +1,178 @@
+/* Gradient background for Login page */
+.loginPage {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+}
+
+/* Container for the login form */
+.formContainer {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background effect */
+.formContainer::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent
+  );
+  transform: rotate(-45deg);
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: rotate(-45deg) translateX(-100%);
+  }
+  100% {
+    transform: rotate(-45deg) translateX(100%);
+  }
+}
+
+/* Form title */
+.formTitle {
+  text-align: center;
+  margin-bottom: 25px;
+  color: rgba(37, 117, 252, 1);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Input fields */
+.formContainer .formControl {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+.formContainer .formControl:focus {
+  border-color: rgba(37, 117, 252, 1);
+  box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+/* Input group with icon */
+.inputGroup {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.inputIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.inputIcon:hover {
+  color: rgba(37, 117, 252, 1);
+}
+
+/* Submit button */
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  border: none;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #6c757d;
+}
+
+/* Social Login */
+.socialLogin {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.socialButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f1f3f5;
+  color: #495057;
+  transition: all 0.3s ease;
+}
+
+.socialButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Register Link */
+.registerLink {
+  text-align: center;
+  margin-top: 20px;
+  color: #6c757d;
+}
+
+.registerLink a {
+  color: rgba(37, 117, 252, 1);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+  .formContainer {
+    padding: 20px;
+    margin: 0 15px;
+  }
+}

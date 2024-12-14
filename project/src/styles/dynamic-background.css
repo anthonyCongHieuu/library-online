@@ -1,0 +1,109 @@
+/* Dynamic Animated Background */
+.dynamic-background {
+    height: 100vh;
+    width: 100%;
+    background-color: hsla(200, 40%, 30%, 0.4);
+    background-image:   
+      url('https://78.media.tumblr.com/cae86e76225a25b17332dfc9cf8b1121/tumblr_p7n8kqHMuD1uy4lhuo1_540.png'), 
+      url('https://78.media.tumblr.com/66445d34fe560351d474af69ef3f2fb0/tumblr_p7n908E1Jb1uy4lhuo1_1280.png'),
+      url('https://78.media.tumblr.com/8cd0a12b7d9d5ba2c7d26f42c25de99f/tumblr_p7n8kqHMuD1uy4lhuo2_1280.png'),
+      url('https://78.media.tumblr.com/5ecb41b654f4e8878f59445b948ede50/tumblr_p7n8on19cV1uy4lhuo1_1280.png'),
+      url('https://78.media.tumblr.com/28bd9a2522fbf8981d680317ccbf4282/tumblr_p7n8kqHMuD1uy4lhuo3_1280.png');
+    background-repeat: repeat-x;
+    background-position: 
+      0 20%,
+      0 100%,
+      0 50%,
+      0 100%,
+      0 0;
+    background-size: 
+      2500px,
+      800px,
+      500px 200px,
+      1000px,
+      400px 260px;
+    animation: para 50s infinite linear;
+  }
+  
+  @keyframes para {
+    100% {
+      background-position: 
+        -5000px 20%,
+        -800px 95%,
+        500px 50%,
+        1000px 100%,
+        400px 0;
+    }
+  }
+  
+  /* Variant 1: Slower and More Subtle */
+  .dynamic-background-slow {
+    animation: para-slow 80s infinite linear;
+  }
+  
+  @keyframes para-slow {
+    100% {
+      background-position: 
+        -3000px 20%,
+        -600px 95%,
+        300px 50%,
+        800px 100%,
+        300px 0;
+    }
+  }
+  
+  /* Variant 2: Ocean-like */
+  .dynamic-background-ocean {
+    background-color: hsla(210, 60%, 40%, 0.4);
+    background-image:   
+      url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'), 
+      url('https://images.unsplash.com/photo-1551525701-174c0628e7d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80'),
+      url('https://images.unsplash.com/photo-1534008757030-27298f3a9dbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1471&q=80');
+    background-repeat: repeat-x;
+    background-position: 
+      0 20%,
+      0 100%,
+      0 50%;
+    background-size: 
+      2000px,
+      1000px,
+      800px 300px;
+    animation: ocean-para 60s infinite linear;
+  }
+  
+  @keyframes ocean-para {
+    100% {
+      background-position: 
+        -4000px 20%,
+        -2000px 95%,
+        800px 50%;
+    }
+  }
+  
+  /* Variant 3: Mountain Landscape */
+  .dynamic-background-mountain {
+    background-color: hsla(220, 40%, 20%, 0.4);
+    background-image:   
+      url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'), 
+      url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'),
+      url('https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+    background-repeat: repeat-x;
+    background-position: 
+      0 20%,
+      0 100%,
+      0 50%;
+    background-size: 
+      2500px,
+      1200px,
+      900px 400px;
+    animation: mountain-para 70s infinite linear;
+  }
+  
+  @keyframes mountain-para {
+    100% {
+      background-position: 
+        -5000px 20%,
+        -2400px 95%,
+        900px 50%;
+    }
+  }

@@ -1,7 +1,6 @@
-import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Book, Users, BookOpen, Library } from 'lucide-react';
-
+import '../styles/dynamic-background.css';
 const Home = () => {
   return (
     <Container>

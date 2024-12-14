@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,45 +21,54 @@ import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <div className="app-container">
           <Navbar />
           <main className="main-content">
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route
-                path="/books"
+
+              {/* Protected Routes */}
+              <Route 
+                path="/manage-books" 
                 element={
                   <PrivateRoute>
                     <BookManagement />
                   </PrivateRoute>
-                }
+                } 
               />
-              <Route
-                path="/borrow-return"
+              <Route 
+                path="/borrow-management" 
                 element={
                   <PrivateRoute>
                     <BorrowReturn />
                   </PrivateRoute>
-                }
+                } 
               />
-              <Route
-                path="/users"
+              <Route 
+                path="/user-management" 
                 element={
                   <PrivateRoute>
                     <UserManagement />
                   </PrivateRoute>
-                }
+                } 
+              />
+
+              {/* Optional: Add a catch-all route */}
+              <Route 
+                path="*" 
+                element={<h1>Trang không tồn tại</h1>} 
               />
             </Routes>
           </main>
           <ToastContainer />
         </div>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

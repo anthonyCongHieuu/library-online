@@ -1,0 +1,141 @@
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Variants */
+.elevated {
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.bordered {
+  border: 2px solid var(--primary-color);
+}
+
+.glassMorphic {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+/* Card Header */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cardHeader h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Card Body */
+.cardBody {
+  padding: 20px;
+}
+
+/* Card Footer */
+.cardFooter {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Interactive Card */
+.interactive::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent
+  );
+  transition: all 0.5s ease;
+}
+
+.interactive:hover::after {
+  left: 100%;
+}
+
+/* Color Variants */
+.primaryCard {
+  border-top: 4px solid var(--primary-color);
+}
+
+.secondaryCard {
+  border-top: 4px solid var(--secondary-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 15px;
+  }
+
+  .cardHeader,
+  .cardBody,
+  .cardFooter {
+    padding: 15px;
+  }
+}
+
+/* Hover Zoom Effect */
+.zoomOnHover {
+  overflow: hidden;
+}
+
+.zoomOnHover img {
+  transition: transform 0.3s ease;
+}
+
+.zoomOnHover:hover img {
+  transform: scale(1.1);
+}
+
+/* Card with Background Image */
+.backgroundCard {
+  background-size: cover;
+  background-position: center;
+  color: white;
+  position: relative;
+}
+
+.backgroundCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom, 
+    rgba(0, 0, 0, 0.1), 
+    rgba(0, 0, 0, 0.7)
+  );
+}
+
+.backgroundCard .cardContent {
+  position: relative;
+  z-index: 1;
+}
