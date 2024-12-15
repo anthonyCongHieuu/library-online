@@ -1,24 +1,21 @@
-import React, { useState } from 'react'; // Thêm useState
-import { Container, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosConfig';
+import styles from '../styles/pages/Register.module.css';
 
-// Validation schema
+
+// Schema xác thực
 const schema = yup.object().shape({
-  name: yup.string()
-    .required('Họ tên là bắt buộc')
-    .min(2, 'Họ tên phải có ít nhất 2 ký tự'),
-  email: yup.string()
-    .email('Email không hợp lệ')
-    .required('Email là bắt buộc'),
-  password: yup.string()
-    .required('Mật khẩu là bắt buộc')
-    .min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
-  confirmPassword: yup.string()
+  name: yup.string().required('Họ tên là bắt buộc'),
+  email: yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
+  password: yup.string().required('Mật khẩu là bắt buộc').min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+  confirmPassword: yup
+    .string()
     .oneOf([yup.ref('password')], 'Mật khẩu không khớp')
     .required('Xác nhận mật khẩu là bắt buộc'),
 });
@@ -32,117 +29,108 @@ interface RegisterForm {
 
 const Register = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); // Thêm state loading
-
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
-  } = useForm<RegisterForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: RegisterForm) => {
-    // Kiểm tra dữ liệu trước khi gửi
-    console.log('Submitting data:', data);
+  // State để điều khiển ẩn/hiện mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-    setIsLoading(true);
+  const onSubmit = async (data: RegisterForm) => {
     try {
-      // Loại bỏ confirmPassword trước khi gửi
-      const { confirmPassword, ...submitData } = data;
-      
-      const response = await axiosInstance.post('/auth/register', {
-        ...submitData,
-        role: 'user' // Thêm role mặc định
+      await axiosInstance.post('/auth/register', {
+        name: data.name,
+        email: data.email,
+        password: data.password,
       });
-      
       toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
     } catch (error: any) {
-      // Xử lý lỗi chi tiết
-      const errorMessage = error.response?.data?.message 
-        || error.response?.data?.errors?.[0] 
-        || 'Đăng ký thất bại. Vui lòng thử lại!';
-      
-      console.error('Register Error:', error.response?.data);
+      const errorMessage = error.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại!';
       toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <Container>
-      <div className="form-container">
-        <h2 className="form-title">Đăng Ký Tài Khoản</h2>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Họ tên</Form.Label>
-            <Form.Control
-              type="text"
-              {...register('name')}
-              isInvalid={!!errors.name}
-            />
-            {errors.name && (
-              <Form.Control.Feedback type="invalid">
-                {errors.name.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
+<Container className={styles.registerPage}>
+  <div className={styles.formContainer}>
+    <h2 className={styles.formTitle}>Đăng ký tài khoản</h2>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              {...register('email')}
-              isInvalid={!!errors.email}
-            />
-            {errors.email && (
-              <Form.Control.Feedback type="invalid">
-                {errors.email.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      {/* Họ và tên */}
+      <Form.Group className="mb-3">
+        <Form.Label className={styles.formLabel}>Họ và tên</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Nhập tên của bạn"
+          {...register('name')}
+          className={styles.formControl}
+          isInvalid={!!errors.name}
+        />
+      </Form.Group>
 
+      {/* Email */}
+      <Form.Group className="mb-3">
+        <Form.Label className={styles.formLabel}>Địa chỉ email</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Nhập email"
+          {...register('email')}
+          className={styles.formControl}
+          isInvalid={!!errors.email}
+        />
+      </Form.Group>
+
+      {/* Mật khẩu */}
+      <Row>
+        <Col md={6} className="position-relative">
           <Form.Group className="mb-3">
-            <Form.Label>Mật khẩu</Form.Label>
+            <Form.Label className={styles.formLabel}>Mật khẩu</Form.Label>
             <Form.Control
-              type="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Nhập mật khẩu"
               {...register('password')}
+              className={styles.formControl}
               isInvalid={!!errors.password}
             />
-            {errors.password && (
-              <Form.Control.Feedback type="invalid">
-                {errors.password.message}
-              </Form.Control.Feedback>
-            )}
           </Form.Group>
+        </Col>
 
+        <Col md={6}>
           <Form.Group className="mb-3">
-            <Form.Label>Xác nhận mật khẩu</Form.Label>
+            <Form.Label className={styles.formLabel}>Xác nhận mật khẩu</Form.Label>
             <Form.Control
-              type="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Nhập lại mật khẩu"
               {...register('confirmPassword')}
+              className={styles.formControl}
               isInvalid={!!errors.confirmPassword}
             />
-            {errors.confirmPassword && (
-              <Form.Control.Feedback type="invalid">
-                {errors.confirmPassword.message}
-              </Form.Control.Feedback>
-            )}
           </Form.Group>
+        </Col>
+      </Row>
 
-          <Button 
-            variant="primary" 
-            type="submit" 
-            className="w-100"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Đang đăng ký...' : 'Đăng Ký'}
-          </Button>
-        </Form>
-      </div>
-    </Container>
+      {/* Ô hiện mật khẩu */}
+      <Form.Group className={styles.formCheck}>
+        <Form.Check
+          type="checkbox"
+          label="Hiện mật khẩu"
+          onChange={togglePasswordVisibility}
+        />
+      </Form.Group>
+
+      {/* Nút Đăng ký */}
+      <Button type="submit" className={styles.submitButton}>
+        Đăng ký tài khoản
+      </Button>
+    </Form>
+
+    <div className={styles.registerLink}>
+      <p>Đã có tài khoản? <a href="/login">Đăng nhập ngay</a></p>
+    </div>
+  </div>
+</Container>
   );
 };
 

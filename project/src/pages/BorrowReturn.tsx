@@ -3,6 +3,7 @@ import { Container, Table, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../contexts/AuthContext';
+import styles from '../styles/pages/BorrowReturn.module.css';
 
 interface Book {
   _id: string;

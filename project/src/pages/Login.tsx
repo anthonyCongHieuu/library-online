@@ -121,7 +121,7 @@ const Login: React.FC = () => {
                   <Button 
                     variant="link" 
                     onClick={togglePasswordVisibility}
-                    className="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                    className={`${styles.passwordToggle} position-absolute`}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </Button>

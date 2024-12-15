@@ -176,3 +176,15 @@
     margin: 0 15px;
   }
 }
+.passwordToggle {
+  position: absolute;
+  top: 55%; /* Dịch icon xuống dưới một chút */
+  transform: translateY(0%); /* Giữ căn giữa chính xác */
+  right: 10px; /* Khoảng cách từ lề phải */
+  z-index: 10; /* Đảm bảo icon nằm trên input */
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
