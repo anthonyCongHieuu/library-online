@@ -4,8 +4,8 @@
     "description": "Backend for Library Management System",
     "main": "server.js",
     "scripts": {
-        "start": "node .bolt/backend/server.js",
-    "dev": "nodemon .bolt/backend/server.js",
+        "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
         "test": "jest",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix"
