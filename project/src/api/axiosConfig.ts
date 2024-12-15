@@ -2,21 +2,21 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-// // Tạo instance Axios với web chạy online 
-// const axiosInstance = axios.create({
-//   baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.railway.app/api',
-//   headers: {
-//     'Content-Type': 'application/json'
-//   }
-// });
-
-// Tạo instance Axios với cấu hình local
+// Tạo instance Axios với web chạy online 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.railway.app/api',
   headers: {
     'Content-Type': 'application/json'
   }
 });
+
+// // Tạo instance Axios với cấu hình local
+// const axiosInstance = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });
 
 // Biến để theo dõi trạng thái chuyển hướng
 let isRedirecting = false;
