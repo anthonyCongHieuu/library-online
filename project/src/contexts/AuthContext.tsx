@@ -36,6 +36,25 @@ interface LoginData {
   status?: 'active' | 'inactive';
 }
 
+// Interface cho response verify token
+interface VerifyTokenResponse {
+  isValid: boolean;
+  user: {
+    _id?: string;
+    id?: string;
+    userId?: string;
+    name: string;
+    email: string;
+    role: string;
+    status?: 'active' | 'inactive';
+  };
+}
+
+// Interface cho response refresh token
+interface RefreshTokenResponse {
+  token: string;
+}
+
 // Interface AuthContextType
 interface AuthContextType {
   user: User | null;
@@ -98,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Xác thực token
   const verifyToken = async (token: string, storedUser?: User) => {
     try {
-      const response = await axiosInstance.get('/auth/verify-token', {
+      const response = await axiosInstance.get<VerifyTokenResponse>('/auth/verify-token', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -106,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userData = response.data.user || storedUser;
         
         const completeUserData: User = {
-          id: userData._id || userData.id || userData.userId,
+          id: userData._id || userData.id || userData.userId || '',
           name: userData.name,
           email: userData.email,
           role: userData.role,
@@ -141,11 +160,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('No token available');
       }
 
-      const response = await axiosInstance.post('/auth/refresh-token', {
+      const response = await axiosInstance.post<RefreshTokenResponse>('/auth/refresh-token', {
         token
       });
 
-      const { token: newToken } = response.data;
+      const newToken = response.data.token;
       
       // Cập nhật token mới
       localStorage.setItem('token', newToken);
@@ -238,5 +257,3 @@ export function useAuth() {
   }
   return context;
 }
-
-

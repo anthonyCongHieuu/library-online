@@ -35,5 +35,10 @@ router.delete(
   requirePermission('manage_books'),
   bookController.deleteBook
 );
-
+//  route tìm kiếm sách
+router.get(
+  '/search', 
+  authMiddleware,  // Yêu cầu đăng nhập
+  bookController.searchBooks
+);
 module.exports = router;

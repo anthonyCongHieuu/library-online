@@ -37,7 +37,7 @@ const BookManagement = () => {
   const fetchBooks = async () => {
     try {
       setIsLoading(true);
-      const response = await axiosInstance.get('/books');
+      const response = await axiosInstance.get<{ books: Book[] }>('/books'); // Chỉ định kiểu cho response
       
       const booksData = response.data.books || response.data;
       setBooks(Array.isArray(booksData) ? booksData : []);
@@ -143,7 +143,7 @@ const BookManagement = () => {
               <Table striped bordered hover responsive>
                 <thead>
                   <tr>
-                    <th>Tên Sách</th>
+ <th>Tên Sách</th>
                     <th>Tác Giả</th>
                     <th>ISBN</th>
                     <th>Thể Loại</th>

@@ -37,5 +37,20 @@ router.patch(
   roleMiddleware(['admin']),
   userController.updateUserRole // Đảm bảo method này tồn tại trong userController
 );
+// Thêm route thông tin cá nhân
+router.get(
+  '/profile', 
+  authMiddleware,
+  userController.getUserProfile
+);
+
+router.put(
+  '/profile', 
+  authMiddleware,
+  userController.updateUserProfile
+);
+
+
+
 
 module.exports = router;

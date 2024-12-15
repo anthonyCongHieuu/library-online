@@ -33,10 +33,10 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axiosInstance.get('/users');
+      const response = await axiosInstance.get<User[]>('/users');
       setUsers(response.data);
-    } catch (error) {
-      toast.error('Không thể tải danh sách người dùng');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Không thể tải danh sách người dùng');
     }
   };
 
@@ -53,8 +53,8 @@ const UserManagement = () => {
       setShowModal(false);
       fetchUsers();
       resetForm();
-    } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
     }
   };
 
@@ -78,8 +78,8 @@ const UserManagement = () => {
       });
       toast.success('Cập nhật trạng thái thành công!');
       fetchUsers();
-    } catch (error) {
-      toast.error('Không thể cập nhật trạng thái người dùng');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Không thể cập nhật trạng thái người dùng');
     }
   };
 
@@ -99,8 +99,8 @@ const UserManagement = () => {
       await axiosInstance.put(`/users/${user._id}/role`, { role: newRole });
       toast.success('Cập nhật vai trò thành công!');
       fetchUsers();
-    } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
     }
   };
 

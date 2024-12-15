@@ -14,12 +14,20 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import BookManagement from './pages/BookManagement';
 import BorrowReturn from './pages/BorrowReturn';
+import Profile from './pages/Profile';
 import UserManagement from './pages/UserManagement';
+
+// Các trang mới
+import BookDetail from './pages/BookDetail';
+import Statistics from './pages/Statistics';
+import AdvancedSearch from './pages/advanced-search';
+import FAQ from './pages/FAQ';
+import ManageBorrows from './pages/ManageBorrows';
 
 // Context
 import { AuthProvider } from './contexts/AuthContext';
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
@@ -31,6 +39,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/advanced-search" element={<AdvancedSearch />} />
 
               {/* Protected Routes */}
               <Route 
@@ -38,6 +48,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <BookManagement />
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/book/:key" 
+                element={
+                  <PrivateRoute>
+                    <BookDetail />
                   </PrivateRoute>
                 } 
               />
@@ -50,6 +68,30 @@ function App() {
                 } 
               />
               <Route 
+                path="/manage-borrows" 
+                element={
+                  <PrivateRoute>
+                    <ManageBorrows />
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/statistics" 
+                element={
+                  <PrivateRoute>
+                    <Statistics />
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <PrivateRoute>
+                    <Profile />
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
                 path="/user-management" 
                 element={
                   <PrivateRoute>
@@ -58,10 +100,10 @@ function App() {
                 } 
               />
 
-              {/* Optional: Add a catch-all route */}
+              {/* Catch-All Route */}
               <Route 
                 path="*" 
-                element={<h1>Trang không tồn tại</h1>} 
+                element={<h1 className="text-center">404 - Trang Không Tồn Tại</h1>} 
               />
             </Routes>
           </main>
@@ -70,6 +112,6 @@ function App() {
       </AuthProvider>
     </Router>
   );
-}
+};
 
 export default App;

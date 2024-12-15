@@ -25,6 +25,15 @@ interface BorrowRecord {
   };
 }
 
+// Định nghĩa kiểu dữ liệu trả về từ API
+interface BorrowRecordsResponse {
+  borrowRecords: BorrowRecord[];
+}
+
+interface BooksResponse {
+  books: Book[];
+}
+
 const BorrowReturn = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [borrowRecords, setBorrowRecords] = useState<BorrowRecord[]>([]);
@@ -45,15 +54,10 @@ const BorrowReturn = () => {
 
   const fetchBorrowRecords = async () => {
     try {
-      const response = await axiosInstance.get('/borrows');
-      
-      // Kiểm tra và xử lý dữ liệu trả về
-      const recordsData = response.data.borrowRecords || response.data;
-      setBorrowRecords(Array.isArray(recordsData) ? recordsData : []);
+      const response = await axiosInstance.get<BorrowRecordsResponse>('/borrows');
+      setBorrowRecords(response.data.borrowRecords);
     } catch (error: any) {
       console.error('Fetch Borrow Records Error:', error.response);
-      
-      // Xử lý chi tiết các loại lỗi
       if (error.response?.status === 403) {
         toast.error('Bạn không có quyền truy cập danh sách mượn sách');
       } else if (error.response?.status === 401) {
@@ -67,15 +71,10 @@ const BorrowReturn = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await axiosInstance.get('/books');
-      
-      // Kiểm tra và xử lý dữ liệu trả về
-      const booksData = response.data.books || response.data;
-      setBooks(Array.isArray(booksData) ? booksData : []);
+      const response = await axiosInstance.get<BooksResponse>('/books');
+      setBooks(response.data.books);
     } catch (error: any) {
       console.error('Fetch Books Error:', error.response);
-      
-      // Xử lý chi tiết các loại lỗi
       if (error.response?.status === 403) {
         toast.error('Bạn không có quyền truy cập danh sách sách');
       } else if (error.response?.status === 401) {
@@ -100,10 +99,7 @@ const BorrowReturn = () => {
       resetForm();
     } catch (error: any) {
       console.error('Submit Borrow Error:', error.response);
-      
-      // Xử lý chi tiết lỗi
-      const errorMessage = error.response?.data?.message 
-        || 'Có lỗi xảy ra. Vui lòng thử lại!';
+      const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại!';
       toast.error(errorMessage);
     }
   };
@@ -115,10 +111,7 @@ const BorrowReturn = () => {
       fetchBorrowRecords();
     } catch (error: any) {
       console.error('Return Book Error:', error.response);
-      
-      // Xử lý chi tiết lỗi
-      const errorMessage = error.response?.data?.message 
-        || 'Không thể trả sách. Vui lòng thử lại!';
+      const errorMessage = error.response?.data?.message || 'Không thể trả sách. Vui lòng thử lại!';
       toast.error(errorMessage);
     }
   };
@@ -194,7 +187,7 @@ const BorrowReturn = () => {
                     value={book._id}
                     disabled={book.available === 0}
                   >
-                    {book.title }
+                    {book.title}
                   </option>
                 ))}
               </Form.Control>

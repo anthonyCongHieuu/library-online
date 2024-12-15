@@ -27,19 +27,27 @@ interface LoginFormData {
   password: string;
 }
 
+// Interface for API response
+interface LoginResponse {
+  token: string;
+  userId: string;
+  name: string;
+  role: string;
+}
+
 const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
-    mode: 'onBlur'
+    mode: 'onBlur',
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -48,32 +56,31 @@ const Login: React.FC = () => {
     try {
       const response = await axiosInstance.post('/auth/login', {
         email: data.email,
-        password: data.password
+        password: data.password,
       });
 
-      const { 
-        token, 
-        userId, 
-        name, 
-        role 
-      } = response.data;
+      const { token, userId, name, role } = response.data as LoginResponse;
+
+      if (!token || !userId || !name || !role) {
+        throw new Error('Dữ liệu phản hồi không đầy đủ.');
+      }
 
       await login({
         token,
         userId,
         name,
         email: data.email,
-        role
+        role,
       });
-      
+
       toast.success('Đăng nhập thành công!');
       navigate('/');
     } catch (error: any) {
-      const errorMessage = 
-        error.response?.data?.message || 
-        error.response?.data?.errors?.[0] || 
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.errors?.[0] ||
         'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!';
-      
+
       console.error('Login Error:', error.response?.data);
       toast.error(errorMessage);
     } finally {
@@ -82,7 +89,7 @@ const Login: React.FC = () => {
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -118,8 +125,8 @@ const Login: React.FC = () => {
                     isInvalid={!!errors.password}
                     className={styles.formControl} // Sử dụng class từ CSS module
                   />
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     onClick={togglePasswordVisibility}
                     className="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
                   >
@@ -131,9 +138,9 @@ const Login: React.FC = () => {
                 </Form.Group>
 
                 {/* Submit Button */}
-                < Button 
-                  variant="primary" 
-                  type="submit" 
+                <Button
+                  variant="primary"
+                  type="submit"
                   className={styles.submitButton} // Sử dụng class từ CSS module
                   disabled={isLoading}
                 >
@@ -143,7 +150,7 @@ const Login: React.FC = () => {
                 {/* Register Link */}
                 <div className={styles.registerLink}> {/* Sử dụng class từ CSS module */}
                   <p>
-                    Chưa có tài khoản? {' '}
+                    Chưa có tài khoản?{' '}
                     <Link to="/register" className="text-primary">
                       Đăng ký ngay
                     </Link>
@@ -158,4 +165,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;

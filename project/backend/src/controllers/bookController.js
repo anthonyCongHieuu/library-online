@@ -114,7 +114,54 @@ exports.updateBook = async (req, res) => {
     });
   }
 };
+exports.searchBooks = async (req, res) => {
+  try {
+    const { 
+      query = '', 
+      category = '', 
+      author = '',
+      page = 1, 
+      limit = 10 
+    } = req.query;
 
+    // Xây dựng điều kiện tìm kiếm
+    const searchCondition = {
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { author: { $regex: query, $options: 'i' } },
+        { isbn: { $regex: query, $options: 'i' } }
+      ]
+    };
+
+    // Thêm điều kiện thể loại nếu có
+    if (category) {
+      searchCondition.category = category;
+    }
+
+    // Thêm điều kiện tác giả nếu có
+    if (author) {
+      searchCondition.author = { $regex: author, $options: 'i' };
+    }
+
+    // Thực hiện tìm kiếm
+    const books = await Book.find(searchCondition)
+      .limit(Number(limit))
+      .skip((page - 1) * limit);
+
+    const total = await Book.countDocuments(searchCondition);
+
+    res.status(200).json({
+      books,
+      totalPages: Math.ceil(total / limit),
+      currentPage: Number(page)
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Lỗi tìm kiếm sách', 
+      error: error.message 
+    });
+  }
+};
 // Xóa sách
 exports.deleteBook = async (req, res) => {
   try {
@@ -148,4 +195,7 @@ exports.deleteBook = async (req, res) => {
       error: error.message 
     });
   }
+
+
+  
 };

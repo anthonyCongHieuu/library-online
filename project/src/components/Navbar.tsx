@@ -1,10 +1,22 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar as BsNavbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
 // Import icons từ react-icons
-import { FaBook, FaHome, FaShoppingCart, FaUserCog, FaSignInAlt, FaUserPlus, FaSignOutAlt, FaUser } from 'react-icons/fa';
+import { 
+  FaBook, 
+  FaHome, 
+  FaShoppingCart, 
+  FaUserCog, 
+  FaSignInAlt, 
+  FaUserPlus, 
+  FaSignOutAlt, 
+  FaUser, 
+  FaSearch, 
+  FaCog,
+  FaQuestionCircle,
+  FaChartBar
+} from 'react-icons/fa';
 import { MdLibraryBooks } from 'react-icons/md';
 
 const Navbar = () => {
@@ -32,6 +44,7 @@ const Navbar = () => {
 
             {isAuthenticated && (
               <>
+                {/* Quản Lý Dropdown */}
                 {(user?.role === 'librarian' || user?.role === 'admin') && (
                   <NavDropdown 
                     title={
@@ -44,21 +57,54 @@ const Navbar = () => {
                     <NavDropdown.Item as={Link} to="/manage-books">
                       <FaBook className="me-2" size={18} /> Quản Lý Sách
                     </NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/borrow-management">
-                      <FaShoppingCart className="me-2" size={18} /> Quản Lý Mượn Trả
+                    <NavDropdown.Item as={Link} to="/manage-borrows">
+                      <FaShoppingCart className="me-2" size={18} /> Quản Lý Mượn Sách
+                    </NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to="/statistics">
+                      <FaChartBar className="me-2" size={18} /> Thống Kê
                     </NavDropdown.Item>
                   </NavDropdown>
                 )}
+                
+                {/* Tìm Kiếm Sách */}
+                <Nav.Link as={Link} to="/advanced-search" className="d-flex align-items-center">
+                  <FaSearch className="me-2" size={18} /> Tìm Kiếm Nâng Cao
+                </Nav.Link>
 
-                {user?.role === 'admin' && (
-                  <Nav.Link as={Link} to="/user-management" className="d-flex align-items-center">
-                    <FaUserCog className="me-2" size={18} /> Quản Lý Người Dùng
-                  </Nav.Link>
-                )}
+                {/* Thông Tin Cá Nhân Dropdown */}
+                <NavDropdown 
+                  title={
+                    <span className="d-flex align-items-center">
+                      <FaUser className="me-2" size={18} /> 
+                      Cá Nhân
+                    </span>
+                  } 
+                  id="user-dropdown"
+                >
+                  <NavDropdown.Item as={Link} to="/profile">
+                    <FaCog className="me-2" size={18} /> Thông Tin Cá Nhân
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/borrow-management">
+                    <FaBook className="me-2" size={18} /> Sách Đã Mượn
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                {/* Các Trang Bổ Sung */}
+                <Nav.Link as={Link} to="/faq" className="d-flex align-items-center">
+                  <FaQuestionCircle className="me-2" size={18} /> Câu Hỏi Thường Gặp
+                </Nav.Link>
               </>
+            )}
+
+            {/* Quản Lý Người Dùng */}
+            {user?.role === 'admin' && (
+              <Nav.Link as={Link} to="/user-management" className="d-flex align-items-center">
+                <FaUserCog className="me-2" size={18} /> Quản Lý Người Dùng
+              </Nav.Link>
             )}
           </Nav>
 
+          {/* Đăng Nhập/Đăng Xuất */}
           <Nav>
             {!isAuthenticated ? (
               <>

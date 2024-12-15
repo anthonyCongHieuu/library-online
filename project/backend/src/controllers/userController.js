@@ -13,6 +13,46 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .select('-password')
+      .populate('borrowRecords');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Lỗi lấy thông tin cá nhân', 
+      error: error.message 
+    });
+  }
+};
+
+exports.updateUserProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.userId, 
+      { name, email }, 
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser );
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Lỗi cập nhật thông tin cá nhân', 
+      error: error.message 
+    });
+  }
+};
+
+
+
 // Cập nhật thông tin người dùng
 exports.updateUser = async (req, res) => {
   try {
