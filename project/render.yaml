@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: library-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        fromDatabase:
+          name: library-mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: https://your-frontend-url.onrender.com
+
+  - type: web
+    name: library-frontend
+    env: static
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  - type: database
+    name: library-mongodb
+    image: mongo
+    plan: free
+    ipAllowList: []

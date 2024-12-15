@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 
 // Tạo instance Axios với cấu hình cơ bản
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'https://your-backend-url.railway.app/api',
   headers: {
     'Content-Type': 'application/json'
   }
