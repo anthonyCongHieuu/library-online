@@ -3,7 +3,7 @@ services:
     name: library-backend
     env: node
     buildCommand: yarn install
-    startCommand: node backend/server.js  # Đảm bảo đúng đường dẫn
+    startCommand: node project/backend/server.js  # Đảm bảo đúng đường dẫn
     envVars:
       - key: MONGODB_URI
         fromDatabase:
