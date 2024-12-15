@@ -18,6 +18,9 @@ mongoose.set('strictQuery', false); // Chuyển về hành vi mới
 
 // Khởi tạo ứng dụng
 const app = express();
+  app.get('/', (req, res) => {
+    res.status(200).json({ message: "Welcome to the Library Management API!" });
+  });
 
 // Middleware cơ bản
 app.use(cors({
