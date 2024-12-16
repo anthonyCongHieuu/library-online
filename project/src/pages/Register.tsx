@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -64,6 +64,8 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   return (
     <div className={styles.registerPage}>
@@ -74,6 +76,7 @@ const Register = () => {
             <Form.Label>Họ tên</Form.Label>
             <Form.Control
               type="text"
+              placeholder="Nhập họ tên của bạn"
               className={styles.formControl}
               {...register('name')}
               isInvalid={!!errors.name}
@@ -91,6 +94,7 @@ const Register = () => {
               type="email"
               className={styles.formControl}
               {...register('email')}
+              placeholder="Nhập email của bạn"
               isInvalid={!!errors.email}
             />
             {errors.email && (
@@ -100,44 +104,59 @@ const Register = () => {
             )}
           </div>
 
-          <div className={styles.inputGroup}>
-            <Form.Label>Mật khẩu</Form.Label>
-            <Form.Control
-              type="password"
-              className={styles.formControl}
-              {...register('password')}
-              isInvalid={!!errors.password}
-            />
-            {errors.password && (
-              <Form.Control.Feedback type="invalid">
-                {errors.password.message}
-              </Form.Control.Feedback>
-            )}
-          </div>
+          <Row>
+            <Col md={6} className="position-relative">
+              <Form.Group className="mb-3">
+                <Form.Label className={styles.formLabel}>Mật khẩu</Form.Label>
+                <Form.Control
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Nhập mật khẩu"
+                  {...register('password')}
+                  className={styles.formControl}
+                  isInvalid={!!errors.password}
+                />
+                {errors.password && (
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password.message}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
+            </Col>
 
-          <div className={styles.inputGroup}>
-            <Form.Label>Xác nhận mật khẩu</Form.Label>
-            <Form.Control
-              type="password"
-              className={styles.formControl}
-              {...register('confirmPassword')}
-              isInvalid={!!errors.confirmPassword}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className={styles.formLabel}>Xác nhận mật khẩu</Form.Label>
+                <Form.Control
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Nhập lại mật khẩu"
+                  {...register('confirmPassword')}
+                  className={styles.formControl}
+                  isInvalid={!!errors.confirmPassword}
+                />
+                {errors.confirmPassword && (
+                  <Form.Control.Feedback type="invalid">
+                    {errors.confirmPassword.message}
+                  </Form.Control.Feedback>
+                )}
+              </Form.Group>
+            </Col>
+          </Row>
+          <Form.Group className={styles.formCheck}>
+            <Form.Check
+              type="checkbox"
+              label="Hiện mật khẩu"
+              onChange={togglePasswordVisibility}
             />
-            {errors.confirmPassword && (
-              <Form.Control.Feedback type="invalid">
-                {errors.confirmPassword.message}
-              </Form.Control.Feedback>
-            )}
-          </div>
+          </Form.Group>
 
-          <Button 
-            type="submit" 
-            className={styles.submitButton} 
-            disabled={isLoading}
-          >
-            {isLoading ? 'Đang đăng ký...' : 'Đăng Ký'}
+          <Button type="submit" className={styles.submitButton}>
+            Đăng ký tài khoản
+            {isLoading ? 'Đang đăng ký...' : ''}
           </Button>
         </Form>
+        <div className={styles.registerLink}>
+          <p>Đã có tài khoản? <a href="/login">Đăng nhập ngay</a></p>
+        </div>
       </div>
     </div>
   );

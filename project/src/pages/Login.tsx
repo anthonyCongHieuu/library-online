@@ -128,7 +128,7 @@ const Login: React.FC = () => {
                   <Button
                     variant="link"
                     onClick={togglePasswordVisibility}
-                    className="position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent"
+                    className={`${styles.passwordToggle} position-absolute`}
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </Button>
@@ -149,12 +149,7 @@ const Login: React.FC = () => {
 
                 {/* Register Link */}
                 <div className={styles.registerLink}> {/* Sử dụng class từ CSS module */}
-                  <p>
-                    Chưa có tài khoản?{' '}
-                    <Link to="/register" className="text-primary">
-                      Đăng ký ngay
-                    </Link>
-                  </p>
+                    <p>Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
                 </div>
               </Form>
             </div>

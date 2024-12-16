@@ -168,6 +168,10 @@
   text-decoration: none;
   font-weight: 600;
 }
+.registerLink a:hover {
+  color: #2575fc;
+  text-decoration: underline;
+}  
 
 /* Responsive Adjustments */
 @media (max-width: 576px) {
@@ -175,4 +179,14 @@
     padding: 20px;
     margin: 0 15px;
   }
+}
+.passwordToggle {
+  top: 55%; /* Đặt icon mắt giữa theo chiều dọc */
+  transform: translateY(0%); /* Dịch chuyển để căn giữa hoàn hảo */
+  right: 10px; /* Canh lề phải (tùy chỉnh khoảng cách) */
+  z-index: 2; /* Đảm bảo icon nằm trên ô input */
+  border: none; /* Xóa viền nút */
+  background: transparent; /* Làm nền nút trong suốt */
+  padding: 0; /* Xóa padding */
+  cursor: pointer; /* Hiển thị con trỏ pointer khi hover */
 }

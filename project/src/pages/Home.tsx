@@ -1,11 +1,10 @@
-// src/pages/Home.tsx
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Spinner, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Form, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { searchBooks, findBooks, Book } from '../services/bookService';
 import { toast } from 'react-toastify';
+import { FaSearch } from 'react-icons/fa'; // Import biểu tượng kính lúp
 
-// Import CSS module
 import styles from "../styles/pages/Home.module.css";
 
 const Home: React.FC = () => {
@@ -14,14 +13,12 @@ const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
 
-  // Hàm lấy sách
   const fetchBooks = async (method: 'search' | 'find' = 'search') => {
     try {
       setLoading(true);
       let response;
 
       if (method === 'search') {
-        // Chọn chủ đề ngẫu nhiên nếu không có truy vấn
         response = searchQuery 
           ? await findBooks(searchQuery)
           : await searchBooks();
@@ -29,11 +26,9 @@ const Home: React.FC = () => {
         response = await findBooks(searchQuery);
       }
 
-      // Kiểm tra và set sách
       if (response.docs.length > 0) {
         setBooks(response.docs);
       } else {
-        // Nếu không có sách, thử phương pháp khác
         const fallbackResponse = await findBooks();
         setBooks(fallbackResponse.docs);
       }
@@ -45,18 +40,15 @@ const Home: React.FC = () => {
     }
   };
 
-  // Tìm sách khi component mount
   useEffect(() => {
     fetchBooks();
   }, []);
 
-  // Hàm xử lý tìm kiếm
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     fetchBooks('find');
   };
 
-  // Hàm lấy URL ảnh bìa
   const getBookCoverUrl = (book: Book) => {
     return book.cover_i 
       ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
@@ -72,16 +64,24 @@ const Home: React.FC = () => {
         </Col>
       </Row>
 
-      {/* Thanh tìm kiếm */}
+      {/* Thanh tìm kiếm với biểu tượng kính lúp */}
       <Row className="mb-4 justify-content-center">
         <Col md={6}>
           <Form onSubmit={handleSearch} className={styles.searchBar}>
-            <Form.Control 
-              type="text" 
-              placeholder="Tìm kiếm sách (tác giả, tiêu đề, chủ đề)..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <InputGroup>
+              <Form.Control 
+                type="text" 
+                placeholder="Tìm kiếm sách (tác giả, tiêu đề, chủ đề)..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <InputGroup.Text 
+                onClick={handleSearch} 
+                style={{ cursor: 'pointer' }} // Thêm con trỏ chuột để thể hiện có thể nhấn
+              >
+                <FaSearch />
+              </InputGroup.Text>
+            </InputGroup>
           </Form>
         </Col>
       </Row>
