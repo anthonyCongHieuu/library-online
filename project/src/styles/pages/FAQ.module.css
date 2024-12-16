@@ -1,0 +1,72 @@
+/* FAQ.module.css */
+.container {
+    margin-top: 40px;
+    padding: 30px;
+    background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .question {
+    font-size: 1.3rem;
+    color: #3498db;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-left: 5px solid #3498db;
+    padding-left: 15px;
+    font-weight: 600;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  
+  .question:hover {
+    color: #1abc9c;
+    border-color: #1abc9c;
+  }
+  
+  .answer {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #34495e;
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+  
+  .answer:hover {
+    color: #2c3e50;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+    }
+  
+    .title {
+      font-size: 2rem;
+    }
+  
+    .question {
+      font-size: 1.2rem;
+    }
+  
+    .answer {
+      font-size: 0.95rem;
+    }
+  }
+  

@@ -1,140 +1,153 @@
-/* Global Styles */
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container Styling */
+/* Container chính */
 .container {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #ffffff;
+  background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Styling */
-.container h2 {
-  font-weight: bold;
-  color: #343a40;
+/* Tiêu đề */
+.heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
 }
 
-/* Button Styling */
-.btn-primary {
+/* Nút thêm người dùng */
+.addButton {
   background-color: #007bff;
-  border: none;
-  font-weight: bold;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
+.addButton:hover {
   background-color: #0056b3;
 }
 
-.btn-warning {
-  background-color: #ffc107;
-  color: #212529;
-  border: none;
-}
-
-.btn-warning:hover {
-  background-color: #e0a800;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  border: none;
-}
-
-.btn-danger:hover {
-  background-color: #bd2130;
-}
-
-.btn-success {
-  background-color: #28a745;
-  border: none;
-}
-
-.btn-success:hover {
-  background-color: #218838;
-}
-
-/* Table Styling */
+/* Bảng người dùng */
 .table-container {
-  max-height: 500px;
-  overflow-y: auto;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  overflow-x: auto;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
 }
 
-.table {
-  margin-bottom: 0;
-  background-color: #ffffff;
+.table-container table {
+  margin: 0;
+  border-collapse: collapse;
 }
 
-.table thead {
-  background-color: #343a40;
-  color: #ffffff;
-}
-
-.table tbody tr:nth-child(odd) {
-  background-color: #f2f2f2;
-}
-
-.table tbody tr:hover {
-  background-color: #e9ecef;
-}
-
-/* Form Styling */
-.form-control,
-.form-select {
-  border-radius: 5px;
+.table-container th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  text-align: center;
   padding: 10px;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: inline-block;
-  color: #495057;
+.table-container td {
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
 }
 
-/* Modal Styling */
-.modal-content {
-  border-radius: 10px;
-  padding: 20px;
+.table-container tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
+.table-container tr:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+/* Nút hành động */
+button {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+button.btn-warning {
+  background-color: #ffc107;
+  color: black;
+}
+
+button.btn-warning:hover {
+  background-color: #e0a800;
+}
+
+button.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+button.btn-danger:hover {
+  background-color: #c82333;
+}
+
+button.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+button.btn-success:hover {
+  background-color: #218838;
+}
+
+/* Form Modal */
 .modal-header {
   background-color: #007bff;
-  color: #ffffff;
+  color: white;
+  font-weight: 600;
   border-bottom: none;
 }
 
 .modal-title {
-  font-weight: bold;
+  font-size: 1.5rem;
 }
 
-.modal-footer {
-  border-top: none;
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
 }
 
-/* Button Alignment */
-.d-flex.justify-content-end .btn {
-  min-width: 100px;
-}
-
-/* Scrollbar for Table Container */
-.table-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-  background-color: #6c757d;
+.form-control {
   border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  font-size: 0.9rem;
 }
 
-.table-container::-webkit-scrollbar-track {
-  background-color: #f8f9fa;
+.form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.modal-footer button {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.modal-footer .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.modal-footer .btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #0056b3;
 }

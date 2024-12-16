@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Form, Modal } from 'react-bootstrap';
+import { Table, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../contexts/AuthContext';
-
-
+import styles from '../styles/pages/UserManagement.module.css';
 
 interface User {
   _id: string;
@@ -23,7 +22,7 @@ const UserManagement = () => {
     email: '',
     password: '',
     role: 'user',
-    status: 'active'
+    status: 'active',
   });
   const { isAuthenticated } = useAuth();
 
@@ -38,7 +37,9 @@ const UserManagement = () => {
       const response = await axiosInstance.get<User[]>('/users');
       setUsers(response.data);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Không thể tải danh sách người dùng');
+      toast.error(
+        error?.response?.data?.message || 'Không thể tải danh sách người dùng'
+      );
     }
   };
 
@@ -67,7 +68,7 @@ const UserManagement = () => {
       email: user.email,
       password: '',
       role: user.role,
-      status: user.status
+      status: user.status,
     });
     setShowModal(true);
   };
@@ -75,13 +76,13 @@ const UserManagement = () => {
   const handleToggleStatus = async (user: User) => {
     try {
       const newStatus = user.status === 'active' ? 'inactive' : 'active';
-      await axiosInstance.put(`/users/${user._id}/status`, {
-        status: newStatus
-      });
+      await axiosInstance.put(`/users/${user._id}/status`, { status: newStatus });
       toast.success('Cập nhật trạng thái thành công!');
       fetchUsers();
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Không thể cập nhật trạng thái người dùng');
+      toast.error(
+        error?.response?.data?.message || 'Không thể cập nhật trạng thái người dùng'
+      );
     }
   };
 
@@ -91,7 +92,7 @@ const UserManagement = () => {
       email: '',
       password: '',
       role: 'user',
-      status: 'active'
+      status: 'active',
     });
     setEditingUser(null);
   };
@@ -107,15 +108,19 @@ const UserManagement = () => {
   };
 
   return (
-    <Container>
+    <div className={styles.container}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Quản Lý Người Dùng</h2>
-        <Button variant="primary" onClick={() => setShowModal(true)}>
+        <h2 className={styles.heading}>Quản Lý Người Dùng</h2>
+        <Button
+          variant="primary"
+          onClick={() => setShowModal(true)}
+          className={styles.addButton}
+        >
           Thêm Người Dùng
         </Button>
       </div>
 
-      <div className="table-container">
+      <div className={styles['table-container']}>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -132,9 +137,10 @@ const UserManagement = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                  <Form.Select 
-                    value={user.role} 
+                  <Form.Select
+                    value={user.role}
                     onChange={(e) => handleChangeRole(user, e.target.value)}
+                    className={styles['form-control']}
                   >
                     <option value="user">Người dùng</option>
                     <option value="admin">Quản trị viên</option>
@@ -165,54 +171,61 @@ const UserManagement = () => {
         </Table>
       </div>
 
-      <Modal show={showModal} onHide={() => {
-        setShowModal(false);
-        resetForm();
-      }}>
-        <Modal.Header closeButton>
-          <Modal.Title>
+      <Modal
+        show={showModal}
+        onHide={() => {
+          setShowModal(false);
+          resetForm();
+        }}
+      >
+        <Modal.Header className={styles['modal-header']} closeButton>
+          <Modal.Title className={styles['modal-title']}>
             {editingUser ? 'Chỉnh Sửa Người Dùng' : 'Thêm Người Dùng Mới'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Họ Tên</Form.Label>
+              <Form.Label className={styles['form-label']}>Họ Tên</Form.Label>
               <Form.Control
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className={styles['form-control']}
                 required
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label className={styles['form-label']}>Email</Form.Label>
               <Form.Control
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className={styles['form-control']}
                 required
               />
             </Form.Group>
 
             {!editingUser && (
               <Form.Group className="mb-3">
-                <Form.Label>Mật khẩu</Form.Label>
+                <Form.Label className={styles['form-label']}>Mật khẩu</Form.Label>
                 <Form.Control
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className={styles['form-control']}
                   required={!editingUser}
                 />
               </Form.Group>
             )}
 
             <Form.Group className="mb-3">
-              <Form.Label>Vai Trò</Form.Label>
+              <Form.Label className={styles['form-label']}>Vai Trò</Form.Label>
               <Form.Select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className={styles['form-control']}
               >
                 <option value="user">Người dùng</option>
                 <option value="admin">Quản trị viên</option>
@@ -221,10 +234,13 @@ const UserManagement = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Trạng Thái</Form.Label>
+              <Form.Label className={styles['form-label']}>Trạng Thái</Form.Label>
               <Form.Select
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })
+                }
+                className={styles['form-control']}
               >
                 <option value="active">Hoạt động</option>
                 <option value="inactive">Khóa</option>
@@ -232,10 +248,14 @@ const UserManagement = () => {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button variant="secondary" className="me-2" onClick={() => {
-                setShowModal(false);
-                resetForm();
-              }}>
+              <Button
+                variant="secondary"
+                className="me-2"
+                onClick={() => {
+                  setShowModal(false);
+                  resetForm();
+                }}
+              >
                 Hủy
               </Button>
               <Button variant="primary" type="submit">
@@ -245,7 +265,7 @@ const UserManagement = () => {
           </Form>
         </Modal.Body>
       </Modal>
-    </Container>
+    </div>
   );
 };
 

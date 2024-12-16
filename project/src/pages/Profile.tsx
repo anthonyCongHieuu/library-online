@@ -1,130 +1,141 @@
-// Profile.tsx
-import React, { useEffect, useState } from 'react';
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
-import axiosInstance from '../api/axiosConfig';
+import React, { useState, useEffect } from 'react';
+import { Form, Button } from 'react-bootstrap';
+import { FaCamera, FaUser, FaEnvelope } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { useAuth } from '../contexts/AuthContext'; // Sử dụng AuthContext
+import axiosInstance from '../api/axiosConfig';
+import { useAuth } from '../contexts/AuthContext';
 import styles from '../styles/pages/Profile.module.css';
-import * as Yup from 'yup'; // Thêm validation
 
-// Interface nâng cấp
-interface UserProfile {
+// Mở rộng interface User để bao gồm avatar
+interface ExtendedUser {
+  _id?: string;
   name: string;
   email: string;
-  currentPassword?: string; // Mật khẩu hiện tại
-  newPassword?: string;     // Mật khẩu mới
-  confirmPassword?: string; // Xác nhận mật khẩu
+  role: string;
+  avatar?: string; // Đảm bảo avatar có thể tồn tại
 }
 
-// Validation Schema
-const profileValidationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required('Tên không được để trống')
-    .min(3, 'Tên phải có ít nhất 3 ký tự'),
-  email: Yup.string()
-    .email('Email không hợp lệ')
-    .required('Email không được để trống'),
-  currentPassword: Yup.string()
-    .when('newPassword', {
-      is: (newPassword: string) => newPassword && newPassword.length > 0,
-      then: Yup.string().required('Vui lòng nhập mật khẩu hiện tại')
-    }),
-  newPassword: Yup.string()
-    .min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự')
-    .notOneOf([Yup.ref('currentPassword')], 'Mật khẩu mới phải khác mật khẩu hiện tại'),
-  confirmPassword: Yup.string()
-    .when('newPassword', {
-      is: (newPassword: string) => newPassword && newPassword.length > 0,
-      then: Yup.string()
-        .required('Vui lòng xác nhận mật khẩu mới')
-        .oneOf([Yup.ref('newPassword')], 'Mật khẩu xác nhận không khớp')
-    })
-});
+interface AvatarUploadResponse {
+  avatarUrl?: string;
+}
 
 const Profile: React.FC = () => {
-  const { user } = useAuth(); // Lấy thông tin người dùng từ AuthContext
-  const [profile, setProfile] = useState<UserProfile>({
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<ExtendedUser>({
     name: '',
     email: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    role: '',
+    avatar: '/default-avatar.png' // Đặt ảnh mặc định nếu không có avatar
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
 
-  // Fetch profile khi component mount
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [passwordFields, setPasswordFields] = useState({
+    currentPassword: '',
+    newPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Load user data on component mount
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) return; // Ngăn chặn fetch nếu chưa đăng nhập
-
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get<UserProfile>('/user/profile');
-        setProfile(prev => ({
-          ...prev,
-          name: response.data.name,
-          email: response.data.email
-        }));
-      } catch (error: any) {
-        toast.error(
-          error.response?.data?.message || 'Không thể tải thông tin cá nhân'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProfile();
+    if (user) {
+      setProfile({
+        name: user.name || '',
+        email: user.email || '',
+        role: user.role || '',
+        avatar: user.avatar || '/default-avatar.png' // Sử dụng ảnh mặc định nếu không có avatar
+      });
+    }
   }, [user]);
 
-  // Validate form trước khi submit
-  const validateForm = async () => {
-    try {
-      await profileValidationSchema.validate(profile, { abortEarly: false });
-      setValidationErrors({});
-      return true;
-    } catch (error: any) {
-      const errors: { [key: string]: string } = {};
-      error.inner.forEach((err: any) => {
-        errors[err.path] = err.message;
-      });
-      setValidationErrors(errors);
-      return false;
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfile(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordFields(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file)); // Tạo preview cho ảnh
     }
   };
 
-  // Xử lý cập nhật profile
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate form
-    const isValid = await validateForm();
-    if (!isValid) return;
+  const handleAvatarUpload = async () => {
+    if (!avatarFile) {
+      toast.error('Vui lòng chọn ảnh');
+      return;
+    }
 
-    setLoading(true);
+    const formData = new FormData();
+    formData.append('avatar', avatarFile);
+
     try {
-      // Chuẩn bị dữ liệu gửi đi
+      setLoading(true);
+      const response = await axiosInstance.post<AvatarUploadResponse>('/auth/upload-avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      // Cập nhật URL avatar từ response
+      const newAvatarUrl = response.data.avatarUrl || '/default-avatar.png';
+      setProfile(prev => ({
+        ...prev,
+        avatar: newAvatarUrl
+      }));
+
+      toast.success('Cập nhật ảnh đại diện thành công');
+      setAvatarFile(null);
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || 'Cập nhật ảnh thất bại'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!profile.name || !profile.email) {
+      toast.error('Vui lòng điền đầy đủ thông tin');
+      setLoading(false);
+      return;
+    }
+
+    try {
       const updateData = {
         name: profile.name,
         email: profile.email,
-        ...(profile.newPassword ? { 
-          currentPassword: profile.currentPassword,
-          newPassword: profile.newPassword 
+        ...(passwordFields.newPassword ? { 
+          currentPassword: passwordFields.currentPassword,
+          newPassword: passwordFields.newPassword 
         } : {})
       };
 
-      const response = await axiosInstance.put('/user/profile', updateData);
+      await axiosInstance.put('/auth/profile', updateData);
       
       toast.success('Cập nhật thông tin thành công');
       
-      // Reset password fields sau khi cập nhật
-      setProfile(prev => ({
-        ...prev,
+      // Reset password fields
+      setPasswordFields({
         currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      }));
+        newPassword: ''
+      });
     } catch (error: any) {
       toast.error(
         error.response?.data?.message || 'Cập nhật thông tin thất bại'
@@ -134,90 +145,127 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Nếu chưa đăng nhập
-  if (!user) {
-    return <Alert variant="warning">Vui lòng đăng nhập</Alert>;
-  }
-
   return (
     <div className={styles.profileContainer}>
-      <h2 className={styles.title}>Thông Tin Cá Nhân</h2>
-      <Form onSubmit={handleUpdateProfile}>
-        {/* Các trường thông tin */}
-        <Form.Group>
-          <Form.Label>Tên</Form.Label>
-          <Form.Control
-            type="text"
-            value={profile.name}
-            onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
-            isInvalid={!!validationErrors.name}
-          />
-          <Form.Control.Feedback type="invalid">
-            {validationErrors.name}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        {/* Tương tự cho email */}
-        
-        {/* Các trường mật khẩu */}
-        <Form.Group>
-          <Form.Label>Mật Khẩu Hiện Tại (Nếu muốn đổi mật khẩu)</Form.Label>
-          <Form.Control
-            type="password"
-            value={profile.currentPassword}
-            onChange={(e) => setProfile(prev => ({ ...prev, currentPassword: e.target.value }))}
-            isInvalid={!!validationErrors.currentPassword}
-          />
-          <Form.Control.Feedback type="invalid">
-            {validationErrors.currentPassword}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Mật Khẩu Mới</Form.Label>
-          <Form.Control
-            type="password"
-            value={profile.newPassword}
-            onChange={(e) => setProfile(prev => ({ ...prev, newPassword: e.target.value }))}
-            isInvalid={!!validationErrors.newPassword}
-          />
-          <Form.Control.Feedback type="invalid">
-            {validationErrors.newPassword}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Xác Nhận Mật Khẩu Mới</Form.Label>
-          <Form.Control
-            type="password"
-            value={profile.confirmPassword}
-            onChange={(e) => setProfile(prev => ({ ...prev, confirmPassword: e.target.value }))}
-            isInvalid={!!validationErrors.confirmPassword}
-          />
-          <Form.Control.Feedback type="invalid">
-            {validationErrors.confirmPassword}
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? (
-            <Spinner
-              animation="border"
-              role="status"
-              size="sm"
-              className={styles.spinner}
+      <h2 className={styles.title}>Hồ Sơ Cá Nhân</h2>
+      <div className={styles.card}>
+        <div className="text-center mb-4">
+          <div className="position-relative d-inline-block">
+            <img 
+              src={avatarPreview || profile.avatar || '/default-avatar.png'}
+              alt="Avatar" 
+              className="rounded-circle"
+              style={{ 
+                width: '150px', 
+                height: '150px', 
+                objectFit: 'cover' 
+              }}
+            />
+            <input 
+              type="file" 
+              id="avatarUpload"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              style={{ display: 'none' }}
+            />
+            <label 
+              htmlFor="avatarUpload" 
+              className="btn btn-primary position-absolute bottom-0 end-0 rounded-circle"
+              style={{ 
+                padding: '10px', 
+                transform: 'translate(-50%, -50%)' 
+              }}
             >
-              <span className="visually-hidden">Đang cập nhật...</span>
-            </Spinner>
-          ) : (
-            'Cập Nhật'
+              <FaCamera />
+            </label>
+          </div>
+          {avatarFile && (
+            <Button 
+              variant="success" 
+              onClick={handleAvatarUpload}
+              disabled={loading}
+              className="mt-2"
+            >
+              {loading ? 'Đang tải...' : 'Lưu Ảnh'}
+            </Button>
           )}
-        </Button>
-      </Form>
+        </div>
+
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>
+              <FaUser className="me-2" /> Tên
+            </Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              className={styles.input}
+              value={profile.name}
+              onChange={handleProfileChange}
+              placeholder="Nhập tên"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>
+              <FaEnvelope className="me-2" /> Email
+            </Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              className={styles.input}
+              value={profile.email}
+              onChange={handleProfileChange}
+              placeholder="Nhập email"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>Vai trò</Form.Label>
+            <Form.Control
+              type="text"
+              value={profile.role}
+              className={styles.input}
+              readOnly
+            />
+          </Form.Group>
+
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>Mật khẩu hiện tại</Form.Label>
+            <Form.Control
+              type="password"
+              name="currentPassword"
+              className={styles.input}
+              value={passwordFields.currentPassword}
+              onChange={handlePasswordChange}
+              placeholder="Mật khẩu hiện tại"
+            />
+          </Form.Group>
+
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>Mật khẩu mới</Form.Label>
+            <Form.Control
+              type="password"
+              name="newPassword"
+              className={styles.input}
+              value={passwordFields.newPassword}
+              onChange={handlePasswordChange}
+              placeholder="Mật khẩu mới"
+            />
+          </Form.Group>
+
+          <Button 
+            variant="primary" 
+            type="submit" 
+            disabled={loading}
+            className={styles.button}
+          >
+            {loading ? 'Đang cập nhật...' : 'Cập nhật'}
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 };

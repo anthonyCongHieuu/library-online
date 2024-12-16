@@ -1,16 +1,11 @@
-// src/models/User.js
-// Mô hình dữ liệu người dùng
-
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  // Tên người dùng
   name: {
     type: String,
     required: true,
     trim: true
   },
-  // Email đăng nhập
   email: {
     type: String,
     required: true,
@@ -18,24 +13,28 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
-  // Mật khẩu đã được mã hóa
   password: {
     type: String,
     required: true
   },
-  // Vai trò người dùng
   role: {
     type: String,
-    enum: ['user', 'librarian', 'admin'], // Thêm 'admin' vào enum
+    enum: ['user', 'librarian', 'admin'],
     default: 'user'
   },
-  // Trạng thái tài khoản
   status: {
     type: String,
     enum: ['active', 'inactive'],
     default: 'active'
   },
-  // Ngày tạo tài khoản
+  avatar: {
+    type: String,
+    default: '/default-avatar.png'
+  },
+  borrowRecords: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BorrowRecord'
+  }],
   createdAt: {
     type: Date,
     default: Date.now
