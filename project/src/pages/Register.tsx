@@ -1,11 +1,12 @@
-import React, { useState } from 'react'; // Thêm useState
-import { Container, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosConfig';
+import styles from '../styles/pages/Register.module.css'; // Import CSS module
 
 // Validation schema
 const schema = yup.object().shape({
@@ -32,7 +33,7 @@ interface RegisterForm {
 
 const Register = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); // Thêm state loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const { 
     register, 
@@ -43,28 +44,21 @@ const Register = () => {
   });
 
   const onSubmit = async (data: RegisterForm) => {
-    // Kiểm tra dữ liệu trước khi gửi
-    console.log('Submitting data:', data);
-
     setIsLoading(true);
     try {
-      // Loại bỏ confirmPassword trước khi gửi
       const { confirmPassword, ...submitData } = data;
-      
-      const response = await axiosInstance.post('/auth/register', {
+      await axiosInstance.post('/auth/register', {
         ...submitData,
-        role: 'user' // Thêm role mặc định
+        role: 'user',
       });
-      
+
       toast.success('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
     } catch (error: any) {
-      // Xử lý lỗi chi tiết
       const errorMessage = error.response?.data?.message 
         || error.response?.data?.errors?.[0] 
         || 'Đăng ký thất bại. Vui lòng thử lại!';
       
-      console.error('Register Error:', error.response?.data);
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -72,14 +66,15 @@ const Register = () => {
   };
 
   return (
-    <Container>
-      <div className="form-container">
-        <h2 className="form-title">Đăng Ký Tài Khoản</h2>
+    <div className={styles.registerPage}>
+      <div className={styles.formContainer}>
+        <h2 className={styles.formTitle}>Đăng Ký Tài Khoản</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
+          <div className={styles.inputGroup}>
             <Form.Label>Họ tên</Form.Label>
             <Form.Control
               type="text"
+              className={styles.formControl}
               {...register('name')}
               isInvalid={!!errors.name}
             />
@@ -88,12 +83,13 @@ const Register = () => {
                 {errors.name.message}
               </Form.Control.Feedback>
             )}
-          </Form.Group>
+          </div>
 
-          <Form.Group className="mb-3">
+          <div className={styles.inputGroup}>
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
+              className={styles.formControl}
               {...register('email')}
               isInvalid={!!errors.email}
             />
@@ -102,12 +98,13 @@ const Register = () => {
                 {errors.email.message}
               </Form.Control.Feedback>
             )}
-          </Form.Group>
+          </div>
 
-          <Form.Group className="mb-3">
+          <div className={styles.inputGroup}>
             <Form.Label>Mật khẩu</Form.Label>
             <Form.Control
               type="password"
+              className={styles.formControl}
               {...register('password')}
               isInvalid={!!errors.password}
             />
@@ -116,12 +113,13 @@ const Register = () => {
                 {errors.password.message}
               </Form.Control.Feedback>
             )}
-          </Form.Group>
+          </div>
 
-          <Form.Group className="mb-3">
+          <div className={styles.inputGroup}>
             <Form.Label>Xác nhận mật khẩu</Form.Label>
             <Form.Control
               type="password"
+              className={styles.formControl}
               {...register('confirmPassword')}
               isInvalid={!!errors.confirmPassword}
             />
@@ -130,19 +128,18 @@ const Register = () => {
                 {errors.confirmPassword.message}
               </Form.Control.Feedback>
             )}
-          </Form.Group>
+          </div>
 
           <Button 
-            variant="primary" 
             type="submit" 
-            className="w-100"
+            className={styles.submitButton} 
             disabled={isLoading}
           >
             {isLoading ? 'Đang đăng ký...' : 'Đăng Ký'}
           </Button>
         </Form>
       </div>
-    </Container>
+    </div>
   );
 };
 

@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Container, 
-  Grid, 
-  Typography, 
-  Paper, 
-  Chip, 
-  Button, 
-  Skeleton,
-  Box
-} from '@mui/material';
-import { 
-  Book as BookIcon, 
-  Person as AuthorIcon, 
-  Description as DescriptionIcon,
-  Category as CategoryIcon,
-  Error as ErrorIcon
-} from '@mui/icons-material';
+import { Container, Grid, Typography, Paper, Chip, Button, Skeleton, Box } from '@mui/material';
+import { Book as BookIcon, Person as AuthorIcon, Description as DescriptionIcon, Category as CategoryIcon, Error as ErrorIcon } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
 import { getBookDetails, BookDetail } from '../services/bookService';
 import { toast } from 'react-toastify';
@@ -40,11 +25,7 @@ const BookDetailPage: React.FC = () => {
       setError(null);
     } catch (error) {
       console.error('Error fetching book details:', error);
-      const errorMessage = 
-        error instanceof Error 
-          ? error.message 
-          : 'Lỗi không xác định khi tải sách';
-      
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định khi tải sách';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -61,11 +42,11 @@ const BookDetailPage: React.FC = () => {
     <Container>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Skeleton 
-            variant="rectangular" 
-            width="100%" 
-            height={400} 
-            sx={{ borderRadius: 2 }} 
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={400}
+            sx={{ borderRadius: 2 }}
           />
         </Grid>
         <Grid item xs={12} md={8}>
@@ -80,11 +61,11 @@ const BookDetailPage: React.FC = () => {
   // Component hiển thị lỗi
   const ErrorDisplay = () => (
     <Container>
-      <Paper 
-        elevation={3} 
-        sx={{ 
-          p: 4, 
-          textAlign: 'center', 
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          textAlign: 'center',
           bgcolor: 'error.light',
           color: 'error.contrastText'
         }}
@@ -93,9 +74,9 @@ const BookDetailPage: React.FC = () => {
         <Typography variant="h5">
           {error || 'Đã xảy ra lỗi'}
         </Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
+        <Button
+          variant="contained"
+          color="primary"
           onClick={fetchBookDetails}
           sx={{ mt: 2 }}
         >
@@ -146,8 +127,8 @@ const BookDetailPage: React.FC = () => {
       <Typography variant="body1" sx={{ mb: 2 }}>
         <DescriptionIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
         <strong>Mô tả:</strong>{' '}
-        {typeof book.description === 'string' 
-          ? book.description 
+        {typeof book.description === 'string'
+          ? book.description
           : book.description?.value || 'Không có mô tả'}
       </Typography>
 
@@ -155,6 +136,7 @@ const BookDetailPage: React.FC = () => {
         <strong>Năm xuất bản:</strong> {book.first_publish_year || 'Không rõ'}
       </Typography>
 
+      {/* Thêm đoạn code về chủ đề */}
       {book.subjects && book.subjects.length > 0 && (
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle2">
@@ -162,13 +144,14 @@ const BookDetailPage: React.FC = () => {
             Chủ đề:
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {book.subjects.slice(0, 5).map((subject, index) => (
-              <Chip 
-                key={index} 
-                label={subject} 
-                color="primary" 
-                variant="outlined" 
-                size="small" 
+            {book.subjects.map((subject, index) => (
+              <Chip
+                key={index}
+                label={subject}
+                color="primary"
+                variant="outlined"
+                size="small"
+                sx={{ mb: 1 }}
               />
             ))}
           </Box>

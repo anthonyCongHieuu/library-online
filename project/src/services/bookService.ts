@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Interface chi tiết sách
+// --- Interfaces ---
 export interface BookDetail {
   key: string;
   title: string;
@@ -11,9 +11,9 @@ export interface BookDetail {
   subjects?: string[];
   number_of_pages?: number;
   cover_i?: number;
+  isbn?: string | null;
 }
 
-// Interface cho sách
 export interface Book {
   key: string;
   title: string;
@@ -23,7 +23,6 @@ export interface Book {
   subject?: string[];
 }
 
-// Interface phản hồi tìm kiếm sách
 export interface BookSearchResponse {
   docs: Book[];
   num_found: number;
@@ -45,7 +44,7 @@ const BOOK_SUBJECTS = [
 export const checkInternetConnection = (): boolean => navigator.onLine;
 
 // Hàm trích xuất mô tả
-const extractDescription = (description?: string | { value: string }): string | { value: string } | undefined => {
+const extractDescription = (description?: string | { value: string }): string => {
   if (!description) return 'Không có mô tả';
   return typeof description === 'string' ? description : description.value || 'Không có mô tả';
 };
@@ -59,26 +58,33 @@ const processBookDetails = (data: any): BookDetail => ({
     key: author.key || ''
   })) || [],
   description: extractDescription(data.description),
-  first_publish_year: data.first_publish_year,
+  first_publish_year: data.first_publish_year || 'Không rõ',
   subjects: data.subjects || [],
   covers: data.covers || [],
-  number_of_pages: data.number_of_pages,
-  cover_i: data.covers?.[0] // Thêm trường này
+  number_of_pages: data.number_of_pages || 0,
+  cover_i: data.covers?.[0],
+  isbn: extractISBN(data),
 });
+
+// Hàm trích xuất ISBN
+const extractISBN = (book: any): string | null => {
+  if (book.isbn_13?.length > 0) return book.isbn_13[0];
+  if (book.isbn_10?.length > 0) return book.isbn_10[0];
+  return null;
+};
 
 // Hàm fetch dữ liệu sách từ API
 const fetchBookData = async (url: string): Promise<any> => {
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error('Fetch error:', error);
-    throw error;
+    throw new Error('Không thể tải dữ liệu. Vui lòng kiểm tra URL hoặc thử lại sau.');
   }
 };
 
@@ -94,7 +100,7 @@ export const getBookDetails = async (key: string): Promise<BookDetail> => {
     return processBookDetails(data);
   } catch (error) {
     console.error('Detailed fetch error:', error);
-    throw error instanceof Error ? error : new Error('Lỗi không xác định khi tải sách');
+    throw new Error('Lỗi không xác định khi tải sách');
   }
 };
 
@@ -115,11 +121,11 @@ export const searchBooks = async (subject?: string): Promise<BookSearchResponse>
   }
 };
 
-// Hàm tìm kiếm sách với nhiều phương thức
+// Hàm tìm kiếm sách với từ khóa
 export const findBooks = async (query?: string): Promise<BookSearchResponse> => {
   try {
     const response = await axios.get<BookSearchResponse>('https://openlibrary.org/search.json', {
-      params: { q: query || BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)], limit: 20, has_fulltext: true }
+ params: { q: query || BOOK_SUBJECTS[Math.floor(Math.random() * BOOK_SUBJECTS.length)], limit: 20, has_fulltext: true }
     });
 
     const booksWithCovers = response.data.docs.filter(book => book.cover_i && book.title && book.author_name);

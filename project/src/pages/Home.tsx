@@ -1,32 +1,18 @@
 // src/pages/Home.tsx
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
-  Spinner,
-  Form
-} from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { searchBooks, findBooks, Book } from '../services/bookService';
 import { toast } from 'react-toastify';
+
+// Import CSS module
+import styles from "../styles/pages/Home.module.css";
 
 const Home: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const navigate = useNavigate();
-
-  // Danh sách chủ đề để random
-  const bookSubjects = [
-    'fiction', 
-    'science', 
-    'history', 
-    'philosophy', 
-    'technology'
-  ];
 
   // Hàm lấy sách
   const fetchBooks = async (method: 'search' | 'find' = 'search') => {
@@ -78,8 +64,8 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Container fluid>
-      <Row className="mb-4 text-center">
+    <Container fluid className={styles.container}>
+      <Row className={`${styles.header} mb-4 text-center`}>
         <Col>
           <h1>Thư Viện Sách Trực Tuyến</h1>
           <p>Khám phá kho sách phong phú</p>
@@ -89,7 +75,7 @@ const Home: React.FC = () => {
       {/* Thanh tìm kiếm */}
       <Row className="mb-4 justify-content-center">
         <Col md={6}>
-          <Form onSubmit={handleSearch}>
+          <Form onSubmit={handleSearch} className={styles.searchBar}>
             <Form.Control 
               type="text" 
               placeholder="Tìm kiếm sách (tác giả, tiêu đề, chủ đề)..." 
@@ -101,24 +87,20 @@ const Home: React.FC = () => {
       </Row>
 
       {loading ? (
-        <Row className="justify-content-center">
+        <Row className={styles.spinner}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Đang tải...</span>
           </Spinner>
         </Row>
       ) : (
-        <Row>
+        <Row className={styles.cardsContainer}>
           {books.length > 0 ? (
             books.map((book) => (
               <Col key={book.key} md={3} sm={6} className="mb-4">
                 <Card 
-                  className="h-100" 
+                  className={styles.card} 
                   onClick={() => navigate(`/book/${encodeURIComponent(book.key)}`)}
-                  style={{ 
-                    cursor: 'pointer', 
-                    transition: 'transform 0.2s',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                  }}
+                  style={{ cursor: 'pointer' }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.transform = 'scale(1.05)';
                   }}
@@ -130,13 +112,13 @@ const Home: React.FC = () => {
                     variant="top" 
                     src={getBookCoverUrl(book)} 
                     style={{ 
-                      height: '300px', 
-                      objectFit:  'cover' 
+                      height: '200px', 
+                      objectFit: 'cover' 
                     }} 
                   />
                   <Card.Body>
-                    <Card.Title className="text-truncate">{book.title}</Card.Title>
-                    <Card.Text className="text-muted">
+                    <Card.Title className={styles.cardTitle}>{book.title}</Card.Title>
+                    <Card.Text className={styles.cardText}>
                       {book.author_name ? book.author_name.join(', ') : 'Không rõ tác giả'}
                     </Card.Text>
                     <Card.Text>

@@ -25,7 +25,6 @@ interface BorrowRecord {
   };
 }
 
-// Định nghĩa kiểu dữ liệu trả về từ API
 interface BorrowRecordsResponse {
   borrowRecords: BorrowRecord[];
 }
@@ -44,6 +43,10 @@ const BorrowReturn = () => {
     userId: user?.id || '',
     returnDate: ''
   });
+
+  // Kiểm tra quyền mượn sách
+  const canBorrowBook = user?.role === 'user' || user?.role === 'librarian' || user?.role === 'admin';
+  const canManageBorrows = user?.role === 'librarian' || user?.role === 'admin';
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -91,7 +94,7 @@ const BorrowReturn = () => {
     try {
       await axiosInstance.post('/borrows/borrow', {
         ...formData,
-        userId: user?.id // Đảm bảo userId được gửi
+        userId: user?.id
       });
       toast.success('Đăng ký mượn sách thành công!');
       setShowModal(false);
@@ -128,9 +131,11 @@ const BorrowReturn = () => {
     <Container>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Quản Lý Mượn/Trả Sách</h2>
-        <Button variant="primary" onClick={() => setShowModal(true)}>
-          Đăng Ký Mượn Sách
-        </Button>
+        {canBorrowBook && (
+          <Button variant="primary" onClick={() => setShowModal(true)}>
+            Đăng Ký Mượn Sách
+          </Button>
+        )}
       </div>
 
       <div className="table-container">
@@ -154,7 +159,7 @@ const BorrowReturn = () => {
                 <td>{record.returnDate ? new Date(record.returnDate).toLocaleDateString() : 'Chưa trả'}</td>
                 <td>{record.status === 'borrowed' ? 'Đang mượn' : 'Đã trả'}</td>
                 <td>
-                  {record.status === 'borrowed' && (
+                  {canManageBorrows && record.status === 'borrowed' && (
                     <Button variant="danger" onClick={() => handleReturn(record._id)}>
                       Trả Sách
                     </Button>
@@ -192,8 +197,7 @@ const BorrowReturn = () => {
                 ))}
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="formReturnDate">
-              <Form.Label>Ngày Trả</Form.Label>
+            <Form.Group controlId="formReturnDate"> <Form.Label>Ngày Trả</Form.Label>
               <Form.Control
                 type="date"
                 value={formData.returnDate}
