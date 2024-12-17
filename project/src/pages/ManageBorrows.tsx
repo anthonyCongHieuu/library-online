@@ -1,8 +1,8 @@
-// src/pages/ManageBorrows.tsx
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Alert, Spinner } from 'react-bootstrap';
 import axiosInstance from '../api/axiosConfig';
 import { toast } from 'react-toastify';
+import styles from '../styles/pages/ManageBorrows.module.css';
 
 // Định nghĩa kiểu chi tiết hơn
 interface BorrowRecord {
@@ -20,7 +20,6 @@ interface BorrowRecord {
   status: 'borrowed' | 'returned';
 }
 
-// Interface for API response
 interface BorrowsResponse {
   borrowRecords?: BorrowRecord[];
   totalPages?: number;
@@ -28,7 +27,7 @@ interface BorrowsResponse {
 }
 
 const ManageBorrows: React.FC = () => {
-  const [borrows, setBorrows] = useState<BorrowRecord[]>([]); 
+  const [borrows, setBorrows] = useState<BorrowRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -40,43 +39,20 @@ const ManageBorrows: React.FC = () => {
     const fetchBorrows = async () => {
       try {
         setLoading(true);
-        // Thêm params để debug
         const response = await axiosInstance.get<BorrowsResponse>('/borrows', {
-          params: {
-            page: 1,
-            limit: 10
-          }
+          params: { page: 1, limit: 10 }
         });
-        
-        // Debug log
-        console.log('Full Response:', response);
-        console.log('Response Data:', response.data);
 
-        // Xử lý dữ liệu từ response
         const borrowData = response.data.borrowRecords || [];
-
         setBorrows(borrowData);
-        
-        // Cập nhật thông tin phân trang
         setPagination({
           totalPages: response.data.totalPages || 1,
           currentPage: response.data.currentPage || 1
         });
 
-        if (borrowData.length === 0) {
-          setError('Không có dữ liệu mượn sách');
-        }
+        if (borrowData.length === 0) setError('Không có dữ liệu mượn sách');
       } catch (error: any) {
-        console.error('Error Details:', {
-          message: error.message,
-          response: error.response,
-          request: error.request
-        });
-
-        setError(
-          error.response?.data?.message || 
-          'Không thể tải danh sách mượn sách'
-        );
+        setError(error.response?.data?.message || 'Không thể tải danh sách mượn sách');
         toast.error('Không thể tải danh sách mượn sách');
       } finally {
         setLoading(false);
@@ -88,8 +64,8 @@ const ManageBorrows: React.FC = () => {
 
   if (loading) {
     return (
-      <Container className="text-center mt-5">
-        <Spinner animation="border" role="status">
+      <Container className={`${styles.container} text-center mt-5`}>
+        <Spinner animation="border" role="status" className={styles.spinner}>
           <span className="visually-hidden">Đang tải...</span>
         </Spinner>
       </Container>
@@ -98,20 +74,25 @@ const ManageBorrows: React.FC = () => {
 
   if (error) {
     return (
-      <Container>
-        <Alert variant="warning">{error}</Alert>
+      <Container className={styles.container}>
+        <Alert variant="warning" className={styles.alert}>
+          {error}
+        </Alert>
       </Container>
     );
   }
 
   return (
-    <Container>
-      <h2 className="mb-4">Quản Lý Mượn Trả</h2>
+    <Container className={styles.container}>
+      <h2 className={styles.title}>Quản Lý Mượn Trả</h2>
+
       {borrows.length === 0 ? (
-        <Alert variant="info">Không có dữ liệu mượn sách</Alert>
+        <Alert variant="info" className={styles.alert}>
+          Không có dữ liệu mượn sách
+        </Alert>
       ) : (
         <>
-          <Table striped bordered hover responsive>
+          <Table striped bordered hover responsive className={styles.table}>
             <thead>
               <tr>
                 <th>Tên Sách</th>
@@ -129,19 +110,25 @@ const ManageBorrows: React.FC = () => {
                   <td>{borrow.book?.author || 'Không rõ'}</td>
                   <td>{borrow.user?.name || 'Không rõ'}</td>
                   <td>
-                    {borrow.borrowDate 
-                      ? new Date(borrow.borrowDate).toLocaleDateString() 
+                    {borrow.borrowDate
+                      ? new Date(borrow.borrowDate).toLocaleDateString()
                       : 'Chưa xác định'}
                   </td>
                   <td>
-                    {borrow.returnDate 
-                      ? new Date(borrow.returnDate).toLocaleDateString() 
+                    {borrow.returnDate
+                      ? new Date(borrow.returnDate).toLocaleDateString()
                       : 'Chưa trả'}
                   </td>
                   <td>
-                    {borrow.status === 'returned' 
-                      ? 'Đã trả' 
-                      : 'Đang mượn'}
+                    <span
+                      className={`${styles.status} ${
+                        borrow.status === 'borrowed'
+                          ? styles.borrowed
+                          : styles.returned
+                      }`}
+                    >
+                      {borrow.status === 'returned' ? 'Đã trả' : 'Đang mượn'}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -150,7 +137,7 @@ const ManageBorrows: React.FC = () => {
 
           {/* Phân trang */}
           {pagination.totalPages > 1 && (
-            <div className="d-flex justify-content-center mt-3">
+            <div className={`${styles.pagination} mt-3`}>
               <p>
                 Trang {pagination.currentPage} / {pagination.totalPages}
               </p>

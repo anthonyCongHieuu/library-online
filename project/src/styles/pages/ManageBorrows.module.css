@@ -1,0 +1,106 @@
+/* === General Container Styling === */
+.container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* === Title Styling === */
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* === Table Container === */
+  .table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .table th,
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .table thead th {
+    background-color: #3498db;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .table tbody tr:nth-child(odd) {
+    background-color: #f8f9fc;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #eaf2ff;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .table th:first-child,
+  .table td:first-child {
+    border-left: none;
+  }
+  
+  .table th:last-child,
+  .table td:last-child {
+    border-right: none;
+  }
+  
+  /* === Status Styling === */
+  .status {
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    display: inline-block;
+  }
+  
+  .status.borrowed {
+    background-color: #e67e22;
+  }
+  
+  .status.returned {
+    background-color: #2ecc71;
+  }
+  
+  /* === Spinner Styling === */
+  .spinner-container {
+    margin-top: 50px;
+  }
+  
+  /* === Alert Styling === */
+  .alert {
+    text-align: center;
+    font-size: 14px;
+    color: #2c3e50;
+    border-radius: 8px;
+  }
+  
+  /* === Pagination Styling === */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    color: #34495e;
+    font-size: 14px;
+  }
+  
+  .pagination p {
+    margin: 0;
+  }
+  

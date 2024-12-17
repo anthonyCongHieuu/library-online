@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
 import axiosInstance from '../api/axiosConfig';
 import { toast } from 'react-toastify';
+import styles from '../styles/pages/advanced-search.module.css';
+
 
 // Interface để định nghĩa kiểu cho sách
 interface Book {
@@ -62,105 +64,97 @@ const AdvancedSearch: React.FC = () => {
   };
 
   return (
-    <Container>
-      <h2 className="my-4">Tìm Kiếm Nâng Cao</h2>
-      
-      {/* Form tìm kiếm */}
-      <Form onSubmit={handleSearch}>
-        <Form.Group className="mb-3">
-          <Form.Label>Tên Sách</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Nhập tên sách"
-            value={query.title}
-            onChange={(e) => setQuery(prev => ({
-              ...prev, 
-              title: e.target.value 
-            }))}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Tác Giả</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Nhập tên tác giả"
-            value={query.author}
-            onChange={(e) => setQuery(prev => ({
-              ...prev, 
-              author: e.target.value 
-            }))}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Thể Loại</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Nhập thể loại"
-            value={query.category}
-            onChange={(e) => setQuery(prev => ({
-              ...prev, 
-              category: e.target.value 
-            }))}
-          />
-        </Form.Group>
-
-        <Button 
-          variant="primary" 
-          type="submit" 
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Spinner 
-                as="span"
-                animation="border"
+    <Container className={styles.container}>
+    <h2 className={styles.title}>Tìm Kiếm Nâng Cao</h2>
+    
+    <Form onSubmit={handleSearch}>
+      <Form.Group className={styles.formGroup}>
+        <Form.Label className={styles.label}>Tên Sách</Form.Label>
+        <Form.Control
+          className={styles.input}
+          type="text"
+          placeholder="Nhập tên sách"
+          value={query.title}
+          onChange={(e) => setQuery(prev => ({
+            ...prev, 
+            title: e.target.value 
+          }))}
+        />
+      </Form.Group>
+  
+      <Form.Group className={styles.formGroup}>
+        <Form.Label className={styles.label}>Tác Giả</Form.Label>
+        <Form.Control
+          className={styles.input}
+          type="text"
+          placeholder="Nhập tên tác giả"
+          value={query.author}
+          onChange={(e) => setQuery(prev => ({
+            ...prev, 
+            author: e.target.value 
+          }))}
+        />
+      </Form.Group>
+  
+      <Form.Group className={styles.formGroup}>
+        <Form.Label className={styles.label}>Thể Loại</Form.Label>
+        <Form.Control
+          className={styles.input}
+          type="text"
+          placeholder="Nhập thể loại"
+          value={query.category}
+          onChange={(e) => setQuery(prev => ({
+            ...prev, 
+            category: e.target.value 
+          }))}
+        />
+      </Form.Group>
+  
+      <Button className={styles.button} type="submit" disabled={loading}>
+        {loading ? (
+          <>
+            <Spinner 
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+              className={styles.spinner}
+            />
+            Đang tìm kiếm...
+          </>
+        ) : (
+          'Tìm Kiếm'
+        )}
+      </Button>
+    </Form>
+  
+    {/* Hiển thị kết quả tìm kiếm */}
+    {results.length > 0 && (
+      <div className={styles.results}>
+        <h3 className={styles.resultTitle}>Kết Quả Tìm Kiếm</h3>
+        <ListGroup>
+          {results.map((book) => (
+            <ListGroup.Item className={styles.resultItem} key={book._id}>
+              <div className={styles.resultInfo}>
+                <h5>{book.title}</h5>
+                <p>Tác giả: {book.author}</p>
+                <p>Thể loại: {book.category}</p>
+              </div>
+              <Button 
+                variant="outline-primary"
                 size="sm"
-                role="status"
-                aria-hidden="true"
-                className="me-2"
-              />
-              Đang tìm kiếm...
-            </>
-          ) : (
-            'Tìm Kiếm'
-          )}
-        </Button>
-      </Form>
-
-      {/* Hiển thị kết quả tìm kiếm */}
-      {results.length > 0 && (
-        <div className="mt-4">
-          <h3>Kết Quả Tìm Kiếm</h3>
-          <ListGroup>
-            {results.map((book) => (
-              <ListGroup.Item key={book._id}>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <h5>{book.title}</h5>
-                    <p className="text-muted">Tác giả: {book.author}</p>
-                    <p className="text-muted">Thể loại: {book.category}</p>
-                  </div>
-                  <div>
-                    <Button 
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => {
-                        // Chuyển đến trang chi tiết sách
-                        // navigate(`/book/${book._id}`)
-                      }}
-                    >
-                      Chi Tiết
-                    </Button>
-                  </div>
-                </div>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
-      )}
-    </Container>
+                className={styles.detailButton}
+              >
+                Chi Tiết
+              </Button>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </div>
+    )}
+  </Container>
+  
   );
 };
 

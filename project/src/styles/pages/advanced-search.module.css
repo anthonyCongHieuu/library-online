@@ -1,0 +1,127 @@
+/* Container tổng */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f8f9fa; /* Màu nền nhẹ */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Tiêu đề trang */
+  .title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #343a40; /* Màu chữ đậm */
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Form nhóm */
+  .formGroup {
+    margin-bottom: 1rem;
+  }
+  
+  /* Label */
+  .label {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #495057; /* Màu xám đậm */
+  }
+  
+  /* Input Control */
+  .input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #495057;
+  }
+  
+  .input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  /* Button */
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  .spinner {
+    margin-right: 0.5rem;
+  }
+  
+  /* Kết quả tìm kiếm */
+  .results {
+    margin-top: 2rem;
+  }
+  
+  .resultTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #343a40;
+  }
+  
+  /* ListGroup Item */
+  .resultItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .resultItem:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+  }
+  
+  .resultInfo h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #212529;
+  }
+  
+  .resultInfo p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  /* Button Chi Tiết */
+  .detailButton {
+    font-size: 0.875rem;
+    color: #007bff;
+    border: 1px solid #007bff;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .detailButton:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+  

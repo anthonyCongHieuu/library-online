@@ -3,6 +3,7 @@ import { Container, Table, Button, Form, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../contexts/AuthContext';
+import styles from '../styles/pages/BorrowReturn.module.css';
 
 interface Book {
   _id: string;
@@ -128,9 +129,9 @@ const BorrowReturn = () => {
   };
 
   return (
-    <Container>
+    <Container className={styles.container}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Quản Lý Mượn/Trả Sách</h2>
+        <h2 className={styles.title}>Quản Lý Mượn/Trả Sách</h2>
         {canBorrowBook && (
           <Button variant="primary" onClick={() => setShowModal(true)}>
             Đăng Ký Mượn Sách
@@ -138,7 +139,7 @@ const BorrowReturn = () => {
         )}
       </div>
 
-      <div className="table-container">
+      <div className={styles.tableContainer}>
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -160,7 +161,11 @@ const BorrowReturn = () => {
                 <td>{record.status === 'borrowed' ? 'Đang mượn' : 'Đã trả'}</td>
                 <td>
                   {canManageBorrows && record.status === 'borrowed' && (
-                    <Button variant="danger" onClick={() => handleReturn(record._id)}>
+                    <Button 
+                      variant="danger" 
+                      onClick={() => handleReturn(record._id)} 
+                      className={styles.returnButton}
+                    >
                       Trả Sách
                     </Button>
                   )}
@@ -197,7 +202,8 @@ const BorrowReturn = () => {
                 ))}
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="formReturnDate"> <Form.Label>Ngày Trả</Form.Label>
+            <Form.Group controlId="formReturnDate">
+              <Form.Label>Ngày Trả</Form.Label>
               <Form.Control
                 type="date"
                 value={formData.returnDate}

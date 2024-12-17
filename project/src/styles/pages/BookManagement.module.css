@@ -1,203 +1,142 @@
-.bookManagementContainer {
-  padding: 20px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+/* Container */
+.container {
+  background-color: #ffffff; /* Màu nền trắng */
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333333;
+  margin: 0;
+}
+
+.header button {
+  font-size: 1rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+}
+
+/* Table Container */
+.tableContainer {
+  overflow-x: auto; /* Cho phép cuộn ngang trên màn hình nhỏ */
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.table th, .table td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.table th {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Thêm các hiệu ứng nâng cao */
-.table tr {
-  transition: background-color 0.3s ease;
-}
-
-.table th {
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.table td {
-  vertical-align: middle;
-}
-
-.actionColumn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-}
-
-.actionButton {
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.actionButton:hover {
-  transform: scale(1.1);
-  opacity: 0.8;
-}
-
-.searchContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.searchInput {
-  flex-grow: 1;
-  margin-right: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modalContent {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modalTitle {
-  font-size: 1.5rem;
+.table thead th {
+  background-color: #007bff;
+  color: #ffffff;
   font-weight: 600;
-  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  text-align: center;
 }
 
-.closeButton {
-  background: none;
+.table tbody td {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Xen kẽ dòng */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f3f5; /* Hiệu ứng hover */
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Buttons */
+.actionButtons button {
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.actionButtons .btn-warning {
+  background-color: #ffc107;
+  color: #fff;
   border: none;
-  font-size: 1.5rem;
+}
+
+.actionButtons .btn-warning:hover {
+  background-color: #e0a800;
+}
+
+.actionButtons .btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+}
+
+.actionButtons .btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* Loading Message */
+.loadingMessage {
   color: #6c757d;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  font-style: italic;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 2rem;
 }
 
-.closeButton:hover {
-  color: var(--accent-color);
-}
-
-.formGroup {
-  margin-bottom: 15px;
+/* Modal */
+.modalHeader {
+  font-weight: 600;
 }
 
 .formLabel {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
+  font-weight: 600;
+  color: #495057;
 }
 
 .formControl {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
   border-radius: 6px;
-  transition: all 0.3s ease;
+  border: 1px solid #ced4da;
+  box-shadow: none;
+  transition: border-color 0.3s ease-in-out;
 }
 
 .formControl:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+/* Footer Buttons in Modal */
+.modalFooter button {
+  font-size: 1rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
 }
 
-.paginationButton {
-  margin: 0 5px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background-color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.paginationButton:hover {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.paginationButton.active {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .searchContainer {
-    flex-direction: column;
-  }
-
-  .searchInput {
-    margin-right: 0;
-    margin-bottom: 10px;
-    width: 100%;
-  }
-
-  .table {
-    font-size: 0.9rem;
-  }
-
-  .table th, .table td {
-    padding: 8px;
-  }
+/* Permission Denied Message */
+.permissionDenied {
+  text-align: center;
+  color: #dc3545;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 2rem;
 }
