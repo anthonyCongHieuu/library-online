@@ -1,8 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar as BsNavbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
-
-// Import icons từ react-icons
 import { 
   FaBook, 
   FaHome, 
@@ -21,10 +19,22 @@ import { MdLibraryBooks } from 'react-icons/md';
 
 // Import CSS module
 import styles from '../styles/components/Navbar.module.css';
+import { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+
+  // Xử lý hiệu ứng cuộn
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -32,7 +42,11 @@ const Navbar = () => {
   };
 
   return (
-    <BsNavbar expand="lg" className={`${styles.navbar} mb-4`} variant="dark">
+    <BsNavbar
+      expand="lg"
+      className={`${styles.navbar} ${scrolled ? 'scrolled' : ''} mb-4`}
+      variant="dark"
+    >
       <Container>
         <BsNavbar.Brand as={Link} to="/" className={`${styles.navbarBrand} d-flex align-items-center`}>
           <MdLibraryBooks className="me-2" size={24} />
@@ -47,14 +61,13 @@ const Navbar = () => {
 
             {isAuthenticated && (
               <>
-                {/* Quản Lý Dropdown */}
                 {(user?.role === 'librarian' || user?.role === 'admin') && (
-                  <NavDropdown 
+                  <NavDropdown
                     title={
                       <span className="d-flex align-items-center">
                         <FaShoppingCart className="me-2" size={18} /> Quản Lý
                       </span>
-                    } 
+                    }
                     id="management-dropdown"
                     className={styles.navDropdown}
                   >
@@ -72,19 +85,16 @@ const Navbar = () => {
                   </NavDropdown>
                 )}
 
-                {/* Tìm Kiếm Sách */}
                 <Nav.Link as={Link} to="/advanced-search" className={`${styles.navLink} d-flex align-items-center`}>
                   <FaSearch className="me-2" size={18} /> Tìm Kiếm Nâng Cao
                 </Nav.Link>
 
-                {/* Thông Tin Cá Nhân Dropdown */}
-                <NavDropdown 
+                <NavDropdown
                   title={
                     <span className="d-flex align-items-center">
-                      <FaUser className="me-2" size={18} /> 
-                      Cá Nhân
+                      <FaUser className="me-2" size={18} /> Cá Nhân
                     </span>
-                  } 
+                  }
                   id="user-dropdown"
                   className={styles.navDropdown}
                 >
@@ -98,14 +108,12 @@ const Navbar = () => {
                   </div>
                 </NavDropdown>
 
-                {/* Các Trang Bổ Sung */}
                 <Nav.Link as={Link} to="/faq" className={`${styles.navLink} d-flex align-items-center`}>
                   <FaQuestionCircle className="me-2" size={18} /> Câu Hỏi Thường Gặp
                 </Nav.Link>
               </>
             )}
 
-            {/* Quản Lý Người Dùng */}
             {user?.role === 'admin' && (
               <Nav.Link as={Link} to="/user-management" className={`${styles.navLink} d-flex align-items-center`}>
                 <FaUserCog className="me-2" size={18} /> Quản Lý Người Dùng
@@ -113,7 +121,6 @@ const Navbar = () => {
             )}
           </Nav>
 
-          {/* Đăng Nhập/Đăng Xuất */}
           <Nav>
             {!isAuthenticated ? (
               <>
@@ -125,12 +132,12 @@ const Navbar = () => {
                 </Nav.Link>
               </>
             ) : (
-              <NavDropdown 
+              <NavDropdown
                 title={
                   <span className="d-flex align-items-center">
                     <FaUser className="me-2" size={18} /> {user?.name}
                   </span>
-                } 
+                }
                 id="user-dropdown"
                 className={styles.navDropdown}
               >
